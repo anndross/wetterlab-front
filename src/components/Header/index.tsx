@@ -13,16 +13,7 @@ export function Header() {
     <>
       <header className="bg-white w-full fixed top-0 z-20 flex flex-col">
         <div className="w-full h-20 flex justify-between px-[5%] items-center">
-          <Image
-            src="/assets/logo.png"
-            width={138}
-            height={54}
-            alt="Wetterlab"
-            title="Wetterlab"
-            className="md:hidden"
-          />
-
-          <nav className="md:flex hidden gap-6 items-center ">
+          <Link className="md:hidden" href='/'>
             <Image
               src="/assets/logo.png"
               width={138}
@@ -30,6 +21,18 @@ export function Header() {
               alt="Wetterlab"
               title="Wetterlab"
             />
+          </Link>
+
+          <nav className="md:flex hidden gap-6 items-center">
+            <Link href='/'>
+              <Image
+                src="/assets/logo.png"
+                width={138}
+                height={54}
+                alt="Wetterlab"
+                title="Wetterlab"
+              />
+            </Link> 
             <Link href="">
               <Typography type="span">Sobre</Typography>
             </Link>

@@ -1,13 +1,11 @@
 import { Card } from "@/components/Card";
 import { Carousel } from "@/components/Carousel";
-import { Header } from "@/components/Header";
 import { Typography } from "@/components/Typography";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex flex-col pt-20">
-      <Header />
+    <main className="flex flex-col">
       <section className="w-full h-[calc(100vh-80px)]">
         <Carousel
           slides={[

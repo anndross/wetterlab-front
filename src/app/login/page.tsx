@@ -4,7 +4,7 @@ import { IoLockClosed } from "react-icons/io5";
 
 export default function Login() {
     return (
-        <div className="relative flex flex-col justify-center h-screen overflow-hidden">
+        <div className="relative flex flex-col justify-center h-screen overflow-hidden bg-gray-300">
             <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-lg flex flex-col items-center justify-center gap-6">
                 <Image src="/assets/logo.png" width={200} height={200} alt="Wetterlab" title="Wetterlab" />
 
