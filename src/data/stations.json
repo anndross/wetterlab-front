@@ -1,0 +1,174 @@
+[
+    {
+        "datetime": "2024-9-11",
+        "station_id": "A001",
+        "source": "inmet",
+        "location": "MATO GROSSO DO SUL",
+        "position": {
+        "type": "Point",
+        "coordinates": [-47.9292, -15.7801]
+        },
+        "elevation": 1172.0,
+        "prate": { "value": 4.1, "quality": 0 },
+        "ps": { "value": 880.2, "quality": 0 },
+        "dswr": { "value": 1134.5, "quality": 0 },
+        "t": { "value": 21.5, "quality": 0 },
+        "rh": { "value": 85, "quality": 0 },
+        "wdir": { "value": 330, "quality": 0 },
+        "gust": { "value": 7.2, "quality": 0 },
+        "wspd": { "value": 4.2, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-11",
+        "station_id": "A002",
+        "source": "inmet",
+        "location": "SÃO PAULO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-46.6333, -23.5505]
+        },
+        "elevation": 760.0,
+        "prate": { "value": 2.3, "quality": 0 },
+        "ps": { "value": 1012.5, "quality": 0 },
+        "dswr": { "value": 1120.8, "quality": 0 },
+        "t": { "value": 19.8, "quality": 0 },
+        "rh": { "value": 78, "quality": 0 },
+        "wdir": { "value": 340, "quality": 0 },
+        "gust": { "value": 5.8, "quality": 0 },
+        "wspd": { "value": 3.5, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-11",
+        "station_id": "A003",
+        "source": "inmet",
+        "location": "MATO GROSSO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-55.5980, -12.6819]
+        },
+        "elevation": 284.0,
+        "prate": { "value": 7.6, "quality": 0 },
+        "ps": { "value": 920.7, "quality": 0 },
+        "dswr": { "value": 1089.4, "quality": 0 },
+        "t": { "value": 28.4, "quality": 0 },
+        "rh": { "value": 72, "quality": 0 },
+        "wdir": { "value": 345, "quality": 0 },
+        "gust": { "value": 8.9, "quality": 0 },
+        "wspd": { "value": 4.7, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-12",
+        "station_id": "A001",
+        "source": "inmet",
+        "location": "MATO GROSSO DO SUL",
+        "position": {
+        "type": "Point",
+        "coordinates": [-47.9292, -15.7801]
+        },
+        "elevation": 1172.0,
+        "prate": { "value": 3.8, "quality": 0 },
+        "ps": { "value": 882.1, "quality": 0 },
+        "dswr": { "value": 1100.2, "quality": 0 },
+        "t": { "value": 22.3, "quality": 0 },
+        "rh": { "value": 88, "quality": 0 },
+        "wdir": { "value": 320, "quality": 0 },
+        "gust": { "value": 6.1, "quality": 0 },
+        "wspd": { "value": 4.0, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-12",
+        "station_id": "A002",
+        "source": "inmet",
+        "location": "SÃO PAULO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-46.6333, -23.5505]
+        },
+        "elevation": 760.0,
+        "prate": { "value": 3.1, "quality": 0 },
+        "ps": { "value": 1010.8, "quality": 0 },
+        "dswr": { "value": 1094.5, "quality": 0 },
+        "t": { "value": 20.0, "quality": 0 },
+        "rh": { "value": 82, "quality": 0 },
+        "wdir": { "value": 350, "quality": 0 },
+        "gust": { "value": 6.4, "quality": 0 },
+        "wspd": { "value": 4.0, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-12",
+        "station_id": "A003",
+        "source": "inmet",
+        "location": "MATO GROSSO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-55.5980, -12.6819]
+        },
+        "elevation": 284.0,
+        "prate": { "value": 5.4, "quality": 0 },
+        "ps": { "value": 922.3, "quality": 0 },
+        "dswr": { "value": 1090.1, "quality": 0 },
+        "t": { "value": 29.1, "quality": 0 },
+        "rh": { "value": 75, "quality": 0 },
+        "wdir": { "value": 340, "quality": 0 },
+        "gust": { "value": 8.3, "quality": 0 },
+        "wspd": { "value": 4.5, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-13",
+        "station_id": "A001",
+        "source": "inmet",
+        "location": "MATO GROSSO DO SUL",
+        "position": {
+        "type": "Point",
+        "coordinates": [-47.9292, -15.7801]
+        },
+        "elevation": 1172.0,
+        "prate": { "value": 4.4, "quality": 0 },
+        "ps": { "value": 880.4, "quality": 0 },
+        "dswr": { "value": 1152.8, "quality": 0 },
+        "t": { "value": 23.0, "quality": 0 },
+        "rh": { "value": 89, "quality": 0 },
+        "wdir": { "value": 350, "quality": 0 },
+        "gust": { "value": 6.7, "quality": 0 },
+        "wspd": { "value": 4.3, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-13",
+        "station_id": "A002",
+        "source": "inmet",
+        "location": "SÃO PAULO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-46.6333, -23.5505]
+        },
+        "elevation": 760.0,
+        "prate": { "value": 2.6, "quality": 0 },
+        "ps": { "value": 1011.2, "quality": 0 },
+        "dswr": { "value": 1125.1, "quality": 0 },
+        "t": { "value": 19.5, "quality": 0 },
+        "rh": { "value": 79, "quality": 0 },
+        "wdir": { "value": 345, "quality": 0 },
+        "gust": { "value": 5.7, "quality": 0 },
+        "wspd": { "value": 3.9, "quality": 0 }
+    },
+    {
+        "datetime": "2024-9-13",
+        "station_id": "A003",
+        "source": "inmet",
+        "location": "MATO GROSSO",
+        "position": {
+        "type": "Point",
+        "coordinates": [-55.5980, -12.6819]
+        },
+        "elevation": 284.0,
+        "prate": { "value": 6.8, "quality": 0 },
+        "ps": { "value": 923.1, "quality": 0 },
+        "dswr": { "value": 1112.0, "quality": 0 },
+        "t": { "value": 28.6, "quality": 0 },
+        "rh": { "value": 74, "quality": 0 },
+        "wdir": { "value": 343, "quality": 0 },
+        "gust": { "value": 9.0, "quality": 0 },
+        "wspd": { "value": 4.9, "quality": 0 }
+    }
+]
+  

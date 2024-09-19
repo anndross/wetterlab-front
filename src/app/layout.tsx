@@ -4,6 +4,7 @@ import { clsx } from 'clsx';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { NextUIProvider } from "@nextui-org/system";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "pt-20")}>
-        <Header/>
-        {children}
-        <Footer/>
-      </body>
+      <NextUIProvider>
+        <body className={clsx(inter.className, "pt-20")}>
+          <Header/>
+          {children}
+          <Footer/>
+        </body>
+      </NextUIProvider>
     </html>
   );
 }
