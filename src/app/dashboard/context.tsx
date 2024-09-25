@@ -1,6 +1,7 @@
 import { createContext } from "react";
 
 export type filtersType = { 
+    state: string,
     coordinates: number[], 
     dateRange: {
         start: string, 
@@ -22,6 +23,7 @@ const stationsContext = createContext<StationsContextType>({
     stationsData: [], 
     setStationsData: () => {},
     filters: {
+        state: '',
         coordinates: [],
         dateRange: {
             start: '',

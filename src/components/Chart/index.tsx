@@ -81,61 +81,48 @@ export interface TemperatureChartProps {
 export function TemperatureChart() {
   const { stationsData, filters } = useContext(stationsContext)
 
-  const [service] = filters.services
+  console.log('stationsData Chart', stationsData, filters)
+  // const [service] = filters.services
 
-  const mappedServices: { [key: string]: string } = mappedServicesJSON
+  // const mappedServices: { [key: string]: string } = mappedServicesJSON
 
-  const xAxisData = stationsData.map(data => new Date(data.datetime))
+  // const xAxisData = stationsData.map(data => new Date(data.datetime))
 
-  const yAxisData = stationsData.map(data => data.t.value) 
+  // const yAxisData = stationsData.map(data => data.t.value) 
+  // // valueFormatter: (timestamp) => {
+  // //   const date = new Date(timestamp);
+  // //   return date.toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
+  // // }
 
+  // const chartSetting = {
+  //   yAxis: [
+  //     {
+  //       label: mappedServices?.[service] || 'YAXIS',
+  //     },
+  //   ],
+  //   height: 500,
+  // };
 
-  const chartSetting = {
-    yAxis: [
-      {
-        label: mappedServices?.[service] || 'YAXIS',
-      },
-    ],
-    height: 500,
-  };
+  // const dates = stationsData.map(data => {
+  //     return new Date(data.datetime).getTime()
+  // })
 
-  const dataset = stationsData.map(data => {
-    return {
-      datetime: dayjs(data.datetime).format('DD/MM/YYYY'),
-      location: data[service].value
-    }
-  })
+  // const dataset = stationsData.map(data => data[service])
 
-  console.log('dataset', dataset)
+  // console.log('dataset', dates, dataset)
 
   return (
     <div>
-      <BarChart
-        dataset={dataset}
-        xAxis={[{ scaleType: 'band', dataKey: 'datetime' }]}
-        series={[
-          { dataKey: 'location', label: filters.state },
-        ]}
-        {...chartSetting}
-      />
-{/* 
-      <LineChart
-        xAxis={[
-          {
-            label: "Data",
-            data: xAxisData,
-            tickInterval: xAxisData,
-            scaleType: "time",
-            valueFormatter: (date) => dayjs(date).format("MMM D"),
-          },
-        ]}
-        yAxis={[{ label: "Temperatura (°C)" }]}
-        series={[
-          { label: "Temperatura", data: yAxisData },
-        ]}
-        height={400}
-        
-      /> */}
+    {/* <LineChart
+      xAxis={[{ data: dates, label: 'Data'}]}  // Datas convertidas para timestamps
+      series={[
+        {
+          label: "Temperatura (°C)",
+          data: [21.5, 22.3, 23.0],  // Dados de temperatura
+        },
+      ]}
+      height={400}
+    /> */}
     </div>
   );
 }

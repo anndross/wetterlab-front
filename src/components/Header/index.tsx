@@ -5,9 +5,13 @@ import { useState } from "react";
 import { Button } from "../Button";
 import { Typography } from "../Typography";
 import { Menu } from "./Menu";
+import { UserDropdown } from "./UserDropdown";
+import { useCookies } from "next-client-cookies";
 
 export function Header() {
   const [show, setShow] = useState(false);
+
+  const cookies = useCookies();
 
   return (
     <>
@@ -45,12 +49,21 @@ export function Header() {
             <Link href="">
               <Typography type="span">Blog</Typography>
             </Link>
+
+            {cookies.get('token') &&
+              <Link href="/dashboard">
+                <Typography type="span">Dashboard</Typography>
+              </Link>
+            }
           </nav>
 
           <div className="md:flex hidden gap-4">
-            <Link href="/login">
-              <Button>Login</Button>
-            </Link>
+            {!cookies.get('token') 
+              ? <Link href="/login">
+                  <Button>Login</Button>
+                </Link>
+              : <UserDropdown />
+            }
             <Button variant="secondary">Fale conosco</Button>
           </div>
 

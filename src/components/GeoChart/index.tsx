@@ -28,7 +28,7 @@ export const GeoChart = () => {
           
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
             .then(response => response.json())
-            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.state.toUpperCase()})))
+            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.state.toUpperCase(), coordinates: [lat, lng]})))
         },
     });
     return null;
