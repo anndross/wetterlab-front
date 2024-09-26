@@ -7,6 +7,8 @@ import { CiUser } from "react-icons/ci";
 
 export function UserDropdown() {
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+
+
   const cookies = useCookies();
     const [user, setUser] = useState<any>({})
 
@@ -52,9 +54,13 @@ export function UserDropdown() {
       </DropdownTrigger>
       <DropdownMenu variant="faded" aria-label="Dropdown menu with description">
       <DropdownSection title="Informações">  
-        <DropdownItem
-            key="new"
-            description="Nome da corporação"
+          <DropdownItem
+            description="E-mail"
+          >
+            {user?.email}
+          </DropdownItem>
+          <DropdownItem
+            description="Corporação"
           >
             {user?.company_name}
           </DropdownItem>
@@ -62,6 +68,24 @@ export function UserDropdown() {
             description="País"
           >
             {user?.country}
+          </DropdownItem>
+          <DropdownItem
+            description="Localidade"
+          >
+            {user?.city}
+          </DropdownItem>
+          <DropdownItem
+            description="Endereço"
+          >
+            {user?.address}
+          </DropdownItem>
+          <DropdownItem>
+            <Button onClick={() => {
+              cookies.remove('token')
+              window.location.reload()
+            }}>
+              Sair
+            </Button>
           </DropdownItem>
         </DropdownSection>
       </DropdownMenu>

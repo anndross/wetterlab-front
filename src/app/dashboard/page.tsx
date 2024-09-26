@@ -1,5 +1,5 @@
 'use client'
-import { TemperatureChart } from '@/components/Chart';
+import { Chart } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
 import { SelectService } from "@/components/SelectService";
@@ -21,12 +21,16 @@ export default function Dashboard() {
         dateRange: { start: '', end: '' },
         services: ['t']
     })
+    const [loading, setLoading] = useState<boolean>(true)
 
+    const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
     const rawStationsData = data
 
     const cookies = useCookies()
 
-    // useEffect responsável pelo carregamento dos filtros iniciais
+    /**
+     * @description useEffect responsável pelo carregamento dos filtros iniciais
+     */
     useEffect(() => {
         const token =  cookies.get('token')
 
@@ -44,6 +48,8 @@ export default function Dashboard() {
 
             const [{ lat, lon }] = await fetch(`https://nominatim.openstreetmap.org/search.php?state=${decodedToken.city}&country=${decodedToken.country}&polygon_geojson=1&format=jsonv2`).then(response => response.json())
             
+            setIsTheFirstAcess({lat, lon, city: decodedToken.city})
+
             setFilters({ state: decodedToken.city, coordinates: [lat, lon], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
         }   
 
@@ -51,17 +57,42 @@ export default function Dashboard() {
     }, [cookies])
 
 
-    // useEffect responsável pelo armazenamento dos dados de stations com base nos filtros
+    /**
+     * @description useEffect responsável pelo armazenamento dos dados de stations com base nos filtros
+     */
     useEffect(() => {
-        // pega todos os dados de stations com base nos filtros
+        /**
+         * @description pega todos os dados de stations com base nos filtros
+         */
         async function getStationsDataAndStore() {
-            const {coordinates: [lat, lon], dateRange: { start, end }} = filters
+            const {state, coordinates: [lat, lon], dateRange: { start, end }} = filters
 
-            console.log('lat.lon', lat, lon, filters)
-            const stationsDataResponse = await fetch(`http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${start}&to=${end}`)
-                .then(response => response.json())
+            const endpointByCoordinate = `http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${start}&to=${end}`
+            const endpointByCity = `http://127.0.0.1:8000/api/meteor/stations?location=${state}&from=${start}&to=${end}`
 
-            setStationsData(stationsDataResponse)
+
+            const isTheFirstAcessCondition = isTheFirstAcess.lat === lat && isTheFirstAcess.lon === lon && isTheFirstAcess.city === state
+
+            const currentEndpoint = isTheFirstAcessCondition ? endpointByCity : endpointByCoordinate
+
+            setLoading(true)
+
+            const stationsDataResponse = await fetch(currentEndpoint)
+                .then(response => response.ok && response.json())
+
+            setIsTheFirstAcess({
+                lat, 
+                lon, 
+                city: state
+            })
+
+            if(stationsDataResponse.length) {
+                setStationsData(stationsDataResponse)
+            } else {
+                setStationsData([])
+            }
+
+            setLoading(false)
         }
 
         if(
@@ -71,54 +102,17 @@ export default function Dashboard() {
         )
             getStationsDataAndStore()
 
-        // // filtro todos os dados pelas coordenadas
-        // const filteredDataByLocation = rawStationsData.filter((stationData: typeof rawStationsData[0]) => {
-        //     if(
-        //         stationData.location === filters.state
-        //     ) return stationData
-        // })
-
-
-        // // índice da posição do dia no array
-        // const dayIndex = 2
-
-        // const startDateWithoutDay = filters.dateRange.start.split('-').filter((_, i, arr) => i < (arr.length - 1)).join('-')
-
-        // const startDateDayNumber = Number(filters.dateRange.start.split('-')[dayIndex])
-        // const endDateDayNumber = Number(filters.dateRange.end.split('-')[dayIndex])
-
-        // const differenceBetween = Math.abs(endDateDayNumber - startDateDayNumber)
-
-        // const rangeDays: string[] = [] 
-
-        // // o + 1 serve para incluir o último dia também (endDate)
-        // for(let date = 0; date < differenceBetween + 1; date++) {
-        //     const currentDate = startDateDayNumber + date
-
-        //     rangeDays.push(`${startDateWithoutDay}-${currentDate}`)
-        // }
-
-        // // filtro todos os dados já filtrados pelas coordenadas pelos dias também
-        // const filteredDataByLocationAndDate: typeof data = []
-        
-        // filteredDataByLocation.forEach(dataByLocation => {
-        //     rangeDays.forEach(day => {
-        //         if(dataByLocation.datetime === day)
-        //             filteredDataByLocationAndDate.push(dataByLocation)
-        //     })
-        // })
-
-        // setStationsData(filteredDataByLocationAndDate)
-    }, [filters])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters.state, filters.coordinates, filters.dateRange])
 
     console.log('filters', filters)
     // const mappedServices: { [key: string]: string } = mappedServicesJSON
 
     return (
-        <ThemeContext.Provider value={{rawStationsData, stationsData, setStationsData, filters, setFilters}}>
-            <main className="w-full min-h-[120vh] grid grid-cols-[66%_34%] p-8 gap-4 bg-slate-50">
+        <ThemeContext.Provider value={{loading, rawStationsData, stationsData, setStationsData, filters, setFilters}}>
+            <main className="w-full min-h-[120vh] grid grid-cols-[66%_34%] p-8 gap-7 bg-slate-50">
                 <section className='w-full h-full'>
-                <Typography variant="h6" component="h2">Resultados para a pesquisa:</Typography>
+                    <Typography variant="h6" component="h2">Resultados para a pesquisa:</Typography>
                     <ul className='mt-3'>
                         <li className='capitalize'>
                             <Typography variant="subtitle2" gutterBottom>Localidade: {filters.state}</Typography>
@@ -131,7 +125,11 @@ export default function Dashboard() {
                         </li>
                     </ul>
 
-                    <TemperatureChart />
+                    <div className='mb-5'>
+                        <SelectService />
+                    </div>
+
+                    <Chart />
                     <div className='flex gap-4 mt-8'>
                         {/* <Card sx={{ minWidth: 275 }}>
                             <CardContent>
@@ -172,7 +170,6 @@ export default function Dashboard() {
                         <DatePicker onChange={(value) => {
                             console.log(value)
                         }} />
-                        <SelectService />
                     </div>
                     <GeoChart />
                 </section>

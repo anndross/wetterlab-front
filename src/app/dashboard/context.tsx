@@ -7,7 +7,7 @@ export type filtersType = {
         start: string, 
         end: string
     },
-    services: string[]
+    services: string[],
 }
 
 export type StationsContextType = { 
@@ -16,12 +16,14 @@ export type StationsContextType = {
     setStationsData: (data: []) => void, 
     filters: filtersType | any,
     setFilters: (filters: filtersType | any) => void
+    loading: boolean
 }
 
 const stationsContext = createContext<StationsContextType>({
     rawStationsData: [], 
     stationsData: [], 
     setStationsData: () => {},
+    loading: true,
     filters: {
         state: '',
         coordinates: [],
@@ -29,7 +31,7 @@ const stationsContext = createContext<StationsContextType>({
             start: '',
             end: ''
         },
-        services: ['']
+        services: [''],
     },
     setFilters: () => {}
 })

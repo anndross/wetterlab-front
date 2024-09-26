@@ -3,20 +3,29 @@ import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 're
 // import './styles.css';
 import { Icon } from 'leaflet';
 import "leaflet/dist/leaflet.css";
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import stationsContext, { filtersType } from '@/app/dashboard/context';
 
 export type LocationType = { latitude: number; longitude: number }
 
 export const GeoChart = () => {
+  const {filters, setFilters} = useContext(stationsContext)
+  
   const initialState = {
     center: [-13.0, -56.0] as any,
     zoom: 4.5,
   };
-
-
+  
   const [state, setState] = useState(initialState)
-  const {setFilters} = useContext(stationsContext)
+
+  useEffect(() => {
+    const { coordinates } = filters
+
+    if(coordinates[0] && coordinates[1])
+      setState(prev => ({...prev, center: coordinates}))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters])
 
   const LocationFinderDummy = () => {
     const map = useMapEvents({
@@ -24,11 +33,9 @@ export const GeoChart = () => {
         click(e) {
           const {lat, lng} = e.latlng
 
-          setState((prev) => ({...prev, center: [e.latlng.lat, e.latlng.lng] }));
-          
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
             .then(response => response.json())
-            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.state.toUpperCase(), coordinates: [lat, lng]})))
+            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.municipality.toUpperCase(), coordinates: [lat, lng]})))
         },
     });
     return null;

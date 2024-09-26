@@ -14,16 +14,16 @@ export function DatePicker({onChange}: DateRangeRickerProps) {
   return (
     <DateRangePicker
       defaultValue={{
-        start: parseZonedDateTime("2024-09-11T00:45[America/Sao_Paulo]"),
-        end: parseZonedDateTime("2024-09-13T11:15[America/Sao_Paulo]"),
+        start: parseZonedDateTime("2022-01-01T00:45[America/Sao_Paulo]"),
+        end: parseZonedDateTime("2022-01-15T11:15[America/Sao_Paulo]"),
       }}
       label="Período"
       labelPlacement="inside"
       className="w-full"
       granularity="day"
       hideTimeZone
-      minValue={parseDate("2024-09-11")}
-      maxValue={parseDate("2024-09-13")}
+      // minValue={parseDate("2024-09-11")}
+      // maxValue={parseDate("2024-09-13")}
       errorMessage="Período máximo selecionado"
       isRequired
       onChange={(datePickerValue) => {

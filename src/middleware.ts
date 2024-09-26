@@ -7,23 +7,24 @@ export async function middleware(request: NextRequest) {
     const cookieStore = cookies()
     const token = cookieStore.get('token')
     
-    if(token?.value.length) {
-      const decodedToken = await fetch('http://127.0.0.1:8000/api/erp/decode-token', {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({ token: token.value })
-      }).then(response => response.json())
+    if(!token) {
+      return NextResponse.redirect(new URL('/login', request.url))
 
-
-      console.log(decodedToken)
-
-      return NextResponse.next()
     }
 
-    return NextResponse.redirect(new URL('/login', request.url))
+    const decodedToken = await fetch('http://127.0.0.1:8000/api/erp/decode-token', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({ token: token.value })
+    }).then(response => response.json())
+
+
+    console.log(decodedToken)
+
+    return NextResponse.next()
 }
  
 // See "Matching Paths" below to learn more

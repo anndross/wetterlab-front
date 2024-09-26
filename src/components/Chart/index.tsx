@@ -5,124 +5,62 @@ import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json"
 import { useContext } from "react";
+import {Spinner} from "@nextui-org/spinner";
+import customParseFormat from 'dayjs/plugin/customParseFormat.js'
+import utc from 'dayjs/plugin/utc.js'
+import timezone from 'dayjs/plugin/timezone.js'
+dayjs.extend(customParseFormat)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
-const xAxisData = [
-  new Date("2023-12-04"),
-  new Date("2023-12-05"),
-  new Date("2023-12-06"),
-  new Date("2023-12-07"),
-  new Date("2023-12-08"),
-  new Date("2023-12-09"),
-  new Date("2023-12-10"),
-  new Date("2023-12-11"),
-  new Date("2023-12-12"),
-  new Date("2023-12-13"),
-  new Date("2023-12-14"),
-  new Date("2023-12-15"),
-  new Date("2023-12-16"),
-  new Date("2023-12-17"),
-  new Date("2023-12-18"),
-  new Date("2023-12-19"),
-  new Date("2023-12-10"),
-  new Date("2023-12-14"),
-  new Date("2023-12-15"),
-  new Date("2023-12-16"),
-  new Date("2023-12-17"),
-  new Date("2023-12-18"),
-  new Date("2023-12-19"),
-];
+const datetime = dayjs.unix(1653134400)
 
-const seriesData = [
-  [43, 38, 36, 30, 37, 43, 44, 31, 28, 27, 27, 33, 40, 35, 40],
-  [31, 28, 27, 27, 33, 40, 35, 43, 38, 36, 30, 37, 43, 44, 23],
-];
-
-const data = {
-    "2023-12-01": [40, 30], 
-    "2023-12-02": [40, 30], 
-    "2023-12-03": [40, 30], 
-    "2023-12-04": [40, 30], 
-    "2023-12-05": [38, 28], 
-    "2023-12-06": [40, 30], 
-    "2023-12-07": [40, 30], 
-    "2023-12-08": [40, 30],
-    "2023-12-09": [40, 30], 
-    "2023-12-10": [38, 28], 
-    "2023-12-11": [40, 30], 
-    "2023-12-12": [40, 30], 
-    "2023-12-13": [40, 30], 
-    "2023-12-14": [40, 30], 
-    "2023-12-15": [40, 30], 
-    "2023-12-16": [40, 30], 
-    "2023-12-17": [40, 30], 
-    "2023-12-18": [40, 30], 
-    "2023-12-19": [40, 30], 
-    "2023-12-20": [40, 30], 
-    "2023-12-21": [40, 30], 
-    "2023-12-22": [40, 30], 
-    "2023-12-23": [40, 30], 
-    "2023-12-24": [40, 30], 
-    "2023-12-25": [40, 30], 
-    "2023-12-26": [40, 30], 
-    "2023-12-27": [40, 30], 
-    "2023-12-28": [40, 30], 
-    "2023-12-29": [40, 30], 
-    "2023-12-30": [40, 30], 
-}
-
-
-export interface TemperatureChartProps {
+export interface ChartProps {
   dateRange: {
     start: string,
     end: string
   }
 }
 
-export function TemperatureChart() {
-  const { stationsData, filters } = useContext(stationsContext)
+export function Chart() {
+  const { stationsData, filters, loading } = useContext(stationsContext)
 
-  console.log('stationsData Chart', stationsData, filters)
-  // const [service] = filters.services
+  const [service] = filters.services
+  
+  const mappedServices: { [key: string]: string } = mappedServicesJSON
 
-  // const mappedServices: { [key: string]: string } = mappedServicesJSON
+  // datas convertidas para timestamps
+  const dates = stationsData.map(data => {
+      const datetime = new Date(data.datetime.$date).getTime()
+      console.log(datetime)
+      return datetime / 1000
+  })
 
-  // const xAxisData = stationsData.map(data => new Date(data.datetime))
 
-  // const yAxisData = stationsData.map(data => data.t.value) 
-  // // valueFormatter: (timestamp) => {
-  // //   const date = new Date(timestamp);
-  // //   return date.toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
-  // // }
 
-  // const chartSetting = {
-  //   yAxis: [
-  //     {
-  //       label: mappedServices?.[service] || 'YAXIS',
-  //     },
-  //   ],
-  //   height: 500,
-  // };
+  const dataset = stationsData.map(data => data?.[service]?.value)
 
-  // const dates = stationsData.map(data => {
-  //     return new Date(data.datetime).getTime()
-  // })
-
-  // const dataset = stationsData.map(data => data[service])
-
-  // console.log('dataset', dates, dataset)
+  console.log('Chart', stationsData, filters, dates, dataset)
 
   return (
-    <div>
-    {/* <LineChart
-      xAxis={[{ data: dates, label: 'Data'}]}  // Datas convertidas para timestamps
-      series={[
-        {
-          label: "Temperatura (°C)",
-          data: [21.5, 22.3, 23.0],  // Dados de temperatura
-        },
-      ]}
-      height={400}
-    /> */}
+    <div className="min-w-full min-h-96 bg-white rounded-lg relative">
+      {loading
+        ? <Spinner className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" size="lg" />
+        : <LineChart
+            xAxis={[{ data: dates, label: 'Data', valueFormatter: (timestamp) => {
+              const date = dayjs.unix(timestamp);
+
+              return date.tz('UTC').format('DD/MM/YYYY');
+            }}]}  
+            series={[
+              {
+                label: mappedServices[service],
+                data: dataset,  // Dados
+              },
+            ]}
+            height={400}
+          />
+      }
     </div>
   );
 }

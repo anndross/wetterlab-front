@@ -1,8 +1,8 @@
+'use server'
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 export async function AuthAction(formData: FormData) {
-    'use server'
 
     const email = formData.get('email')
 
@@ -28,4 +28,6 @@ export async function AuthAction(formData: FormData) {
 
         redirect('/dashboard')
     }
+
+    return 'failed'
 }
