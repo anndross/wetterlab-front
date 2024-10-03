@@ -21,11 +21,11 @@ export async function GET(req: Request) {
 
     const endpoints = {
         stations: {
-            byCoordinate: `http://127.0.0.1:8000/api/meteor/stations?latitude=-7.337&longitude=-47.46&from=${from}&to=${to}`,
+            byCoordinate: `http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${from}&to=${to}`,
             // byLocation: `http://127.0.0.1:8000/api/meteor/stations?location=${location}&from=${from}&to=${to}` 
         },
         models: {
-            byCoordinate: `http://127.0.0.1:8000/api/meteor/models?latitude=-7.337&longitude=-47.46&from=${from}&to=${to}`,
+            byCoordinate: `http://127.0.0.1:8000/api/meteor/models?latitude=${lat}&longitude=${lon}&from=${from}&to=${to}`,
             // byLocation: `http://127.0.0.1:8000/api/meteor/models?location=${location}&from=${from}&to=${to}` 
         }
 

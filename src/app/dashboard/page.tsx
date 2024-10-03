@@ -37,24 +37,24 @@ export default function Dashboard() {
         const token =  cookies.get('token')
 
         async function getUserInfoAndStore() {
-            const decodedToken = await fetch('http://127.0.0.1:8000/api/erp/decode-token', {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({ token: token })
-            }).then(response => response.json())
-    
-            // const [{ lat, lon }] = await fetch(`https://nominatim.openstreetmap.org/search.php?state=${decodedToken.city}&country=${decodedToken.country}&polygon_geojson=1&format=jsonv2`).then(response => response.json())
-
+            // const decodedToken = await fetch('http://127.0.0.1:8000/api/erp/decode-token', {
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     method: 'POST',
+            //     body: JSON.stringify({ token: token })
+            // }).then(response => response.json())
             const availableCoordinatesData = await fetch('/api/available-services?customer_id=1').then(res => res.ok && res.json())
-
+            
             setAvailableCoordinates(availableCoordinatesData)
+            
+            const [lat, lon] = availableCoordinatesData[0]
 
+            const { address } = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`).then(response => response.json())
             // setIsTheFirstAcess({lat, lon, city: decodedToken.city})
 
-            setFilters({ state: decodedToken.city, coordinates: availableCoordinatesData[0], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
+            setFilters({ state: address?.municipality?.toUpperCase(), coordinates: availableCoordinatesData[0], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
         }   
 
         getUserInfoAndStore()

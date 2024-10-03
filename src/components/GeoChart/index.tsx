@@ -33,13 +33,13 @@ export const GeoChart = () => {
       
         click(e) {
           const {lat, lng} = e.latlng
-
+          console.log()
           const latWithLessPrecision = Number(lat.toFixed(6))
           const lngWithLessPrecision = Number(lng.toFixed(6))
 
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latWithLessPrecision}&lon=${lngWithLessPrecision}`)
             .then(response => response.json())
-            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.municipality.toUpperCase(), coordinates: [latWithLessPrecision, lngWithLessPrecision]})))
+            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address?.municipality?.toUpperCase(), coordinates: [latWithLessPrecision, lngWithLessPrecision]})))
         },
     });
     return null;
@@ -61,6 +61,7 @@ export const GeoChart = () => {
               color={'#f25e40'}
               center={location.reverse() as LatLngExpression}
               radius={5}
+
             >
             </Circle>
           )

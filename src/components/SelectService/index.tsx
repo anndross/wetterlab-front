@@ -15,7 +15,14 @@ export const services = [
   ];
 
 export function SelectService() {
-    const { setFilters } = useContext(stationsContext)
+    const { filters: { services }, setFilters } = useContext(stationsContext)
+
+    const markSelectedService = (value: string) => {
+        if(services[0] === value) {
+            return 'primary'
+        }
+        return 'default'
+    }
 
     return ( 
         <div className="flex gap-2">
@@ -23,22 +30,22 @@ export function SelectService() {
                 onClick={() => {
                     setFilters((prev: filtersType) => ({...prev, services: ['t']}))
                 }} 
-            isIconOnly color="default" aria-label="Temperatura" title="Temperatura">
+            isIconOnly color={markSelectedService('t')} aria-label="Temperatura" title="Temperatura">
                 <CiTempHigh />
             </Button> 
             <Button  onClick={() => {
                     setFilters((prev: filtersType) => ({...prev, services: ['prate']}))
-                }} isIconOnly color="default" aria-label="Chuva" title="Chuva">
+                }} isIconOnly color={markSelectedService('prate')} aria-label="Chuva" title="Chuva">
                 <IoRainyOutline />
             </Button> 
             <Button onClick={() => {
                     setFilters((prev: filtersType) => ({...prev, services: ['rh']}))
-                }} isIconOnly color="default" aria-label="Umidade" title="Umidade">
+                }} isIconOnly color={markSelectedService('rh')} aria-label="Umidade" title="Umidade">
                 <CiDroplet />
             </Button> 
             <Button onClick={() => {
                     setFilters((prev: filtersType) => ({...prev, services: ['wspd']}))
-                }} isIconOnly color="default" aria-label="Velocidade do vento" title="Velocidade do vento">
+                }} isIconOnly color={markSelectedService('wspd')} aria-label="Velocidade do vento" title="Velocidade do vento">
                 <FaWind />
             </Button>
         </div>
