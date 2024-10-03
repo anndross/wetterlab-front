@@ -23,24 +23,24 @@ export interface ChartProps {
 }
 
 export function Chart() {
-  const { stationsData, filters, loading } = useContext(stationsContext)
+  const { meteorData, filters, loading } = useContext(stationsContext)
 
   const [service] = filters.services
   
   const mappedServices: { [key: string]: string } = mappedServicesJSON
 
   // datas convertidas para timestamps
-  const dates = stationsData.map(data => {
+  const dates = meteorData.length && meteorData[0].length ? meteorData[0].map((data: any) => {
       const datetime = new Date(data.datetime.$date).getTime()
       console.log(datetime)
       return datetime / 1000
-  })
+  }) : []
+
+  const datasetStations = meteorData.length && meteorData[0].length? meteorData[0].map((data:any) => String(data.wspd?.value).toLowerCase() === 'nan' || String(data.wspd?.value).toLowerCase()  === 'none' ? 0 :  data.wspd?.value) : []
+  const datasetModels = meteorData.length && meteorData[1].length ? meteorData[1].map((data:any) => String(data.wspd).toLowerCase() === 'nan' || String(data.wspd).toLowerCase()  === 'none' ? 0 :  data.wspd) : []
 
 
-
-  const dataset = stationsData.map(data => data?.[service]?.value)
-
-  console.log('Chart', stationsData, filters, dates, dataset)
+  console.log('Chart', { meteorData, filters, dates, datasetStations, datasetModels, loading })
 
   return (
     <div className="min-w-full min-h-96 bg-white rounded-lg relative">
@@ -54,8 +54,12 @@ export function Chart() {
             }}]}  
             series={[
               {
-                label: mappedServices[service],
-                data: dataset,  // Dados
+                label: 'Observados',
+                data: datasetStations,  // Dados
+              },
+              {
+                label: 'Previsões',
+                data: datasetModels,  // Dados
               },
             ]}
             height={400}

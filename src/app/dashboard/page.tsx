@@ -14,7 +14,7 @@ import mappedServicesJSON from "@/data/mappedServices.json"
 import { useCookies } from 'next-client-cookies';
 
 export default function Dashboard() {
-    const [stationsData, setStationsData] = useState<typeof data>([])
+    const [meteorData, setMeteorData] = useState<typeof data>([])
     const [filters, setFilters] = useState<filtersType>({
         state: '',
         coordinates: [], 
@@ -22,8 +22,10 @@ export default function Dashboard() {
         services: ['t']
     })
     const [loading, setLoading] = useState<boolean>(true)
+    const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>([])
 
-    const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
+
+    // const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
     const rawStationsData = data
 
     const cookies = useCookies()
@@ -44,13 +46,15 @@ export default function Dashboard() {
                 body: JSON.stringify({ token: token })
             }).then(response => response.json())
     
-            
+            // const [{ lat, lon }] = await fetch(`https://nominatim.openstreetmap.org/search.php?state=${decodedToken.city}&country=${decodedToken.country}&polygon_geojson=1&format=jsonv2`).then(response => response.json())
 
-            const [{ lat, lon }] = await fetch(`https://nominatim.openstreetmap.org/search.php?state=${decodedToken.city}&country=${decodedToken.country}&polygon_geojson=1&format=jsonv2`).then(response => response.json())
-            
-            setIsTheFirstAcess({lat, lon, city: decodedToken.city})
+            const availableCoordinatesData = await fetch('/api/available-services?customer_id=1').then(res => res.ok && res.json())
 
-            setFilters({ state: decodedToken.city, coordinates: [lat, lon], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
+            setAvailableCoordinates(availableCoordinatesData)
+
+            // setIsTheFirstAcess({lat, lon, city: decodedToken.city})
+
+            setFilters({ state: decodedToken.city, coordinates: availableCoordinatesData[0], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
         }   
 
         getUserInfoAndStore()
@@ -66,30 +70,33 @@ export default function Dashboard() {
          */
         async function getStationsDataAndStore() {
             const {state, coordinates: [lat, lon], dateRange: { start, end }} = filters
+            
+            // const endpointByCoordinate = `http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${start}&to=${end}`
+            // const endpointByCity = `http://127.0.0.1:8000/api/meteor/stations?location=${state}&from=${start}&to=${end}`
 
-            const endpointByCoordinate = `http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${start}&to=${end}`
-            const endpointByCity = `http://127.0.0.1:8000/api/meteor/stations?location=${state}&from=${start}&to=${end}`
 
+            // const isTheFirstAcessCondition = isTheFirstAcess.lat === lat && isTheFirstAcess.lon === lon && isTheFirstAcess.city === state
 
-            const isTheFirstAcessCondition = isTheFirstAcess.lat === lat && isTheFirstAcess.lon === lon && isTheFirstAcess.city === state
-
-            const currentEndpoint = isTheFirstAcessCondition ? endpointByCity : endpointByCoordinate
+            // const currentEndpoint = isTheFirstAcessCondition ? endpointByCity : endpointByCoordinate
 
             setLoading(true)
 
-            const stationsDataResponse = await fetch(currentEndpoint)
-                .then(response => response.ok && response.json())
+            const forecast = await fetch(`/api/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}`).then(data => data.json())
+            console.log('forecast', forecast)
 
-            setIsTheFirstAcess({
-                lat, 
-                lon, 
-                city: state
-            })
+            // const meteorDataResponse = await fetch(currentEndpoint)
+            //     .then(response => response.ok && response.json())
 
-            if(stationsDataResponse.length) {
-                setStationsData(stationsDataResponse)
+            // setIsTheFirstAcess({
+            //     lat, 
+            //     lon, 
+            //     city: state
+            // })
+
+            if(forecast.length) {
+                setMeteorData(forecast)
             } else {
-                setStationsData([])
+                setMeteorData([])
             }
 
             setLoading(false)
@@ -109,7 +116,7 @@ export default function Dashboard() {
     // const mappedServices: { [key: string]: string } = mappedServicesJSON
 
     return (
-        <ThemeContext.Provider value={{loading, rawStationsData, stationsData, setStationsData, filters, setFilters}}>
+        <ThemeContext.Provider value={{loading, rawStationsData, meteorData, setMeteorData, filters, setFilters, availableCoordinates}}>
             <main className="w-full min-h-[120vh] grid grid-cols-[66%_34%] p-8 gap-7 bg-slate-50">
                 <section className='w-full h-full'>
                     <Typography variant="h6" component="h2">Resultados para a pesquisa:</Typography>

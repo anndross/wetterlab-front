@@ -1,7 +1,7 @@
 'use client'
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, Circle, useMapEvents } from 'react-leaflet';
 // import './styles.css';
-import { Icon } from 'leaflet';
+import { Icon, LatLngExpression } from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import { useContext, useEffect, useState } from 'react';
 import stationsContext, { filtersType } from '@/app/dashboard/context';
@@ -9,14 +9,15 @@ import stationsContext, { filtersType } from '@/app/dashboard/context';
 export type LocationType = { latitude: number; longitude: number }
 
 export const GeoChart = () => {
-  const {filters, setFilters} = useContext(stationsContext)
+  const {filters, setFilters, availableCoordinates} = useContext(stationsContext)
   
   const initialState = {
-    center: [-13.0, -56.0] as any,
+    center: [-7.337, -47.46] as any,
     zoom: 4.5,
   };
   
   const [state, setState] = useState(initialState)
+
 
   useEffect(() => {
     const { coordinates } = filters
@@ -33,9 +34,12 @@ export const GeoChart = () => {
         click(e) {
           const {lat, lng} = e.latlng
 
-          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+          const latWithLessPrecision = Number(lat.toFixed(6))
+          const lngWithLessPrecision = Number(lng.toFixed(6))
+
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latWithLessPrecision}&lon=${lngWithLessPrecision}`)
             .then(response => response.json())
-            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.municipality.toUpperCase(), coordinates: [lat, lng]})))
+            .then(data => setFilters((prev: filtersType) => ({...prev, state: data.address.municipality.toUpperCase(), coordinates: [latWithLessPrecision, lngWithLessPrecision]})))
         },
     });
     return null;
@@ -49,6 +53,19 @@ export const GeoChart = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {availableCoordinates.length && availableCoordinates.map((location: number[]) => {
+          return (
+            <Circle
+              key={`${location}`}
+              weight={10}
+              color={'#f25e40'}
+              center={location.reverse() as LatLngExpression}
+              radius={5}
+            >
+            </Circle>
+          )
+        })}
+
         <Marker position={state.center} icon={new Icon({
           iconUrl: '/assets/marker.png',
           iconSize: [30, 30],
