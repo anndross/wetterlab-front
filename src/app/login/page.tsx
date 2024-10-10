@@ -17,9 +17,9 @@ export default function Login() {
                         </label>
                         <div className="flex h-9">
                             <div className="h-full w-10 border flex items-center justify-center">
-                                <FaUser />
+                                <FaUser color="#7f7f7f" />
                             </div>
-                            <input type="email" name="email" className="w-full h-full input input-bordered rounded-none input-primary bg-white" required id="login-email" />
+                            <input type="email" name="email" className="text-black w-full h-full input input-bordered rounded-none input-primary bg-white" required id="login-email" placeholder="company@domain.com" />
                         </div>                    
                     </div>
 

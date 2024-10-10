@@ -70,11 +70,12 @@ export function Chart() {
             series={[
               {
                 label: 'Observados',
-                data: stationsByService,  // Dados
+                data: modelsByService,  // Dados
+                color: "#000"
               },
               {
                 label: 'Previsões',
-                data: modelsByService,  // Dados
+                data: stationsByService,  // Dados
               },
             ]}
             height={400}

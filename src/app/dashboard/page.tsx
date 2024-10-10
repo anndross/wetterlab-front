@@ -2,7 +2,7 @@
 import { Chart } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
-import { SelectService } from "@/components/SelectService";
+import { ServiceOptions } from "@/components/ServiceOptions";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,7 @@ import ThemeContext, { filtersType } from './context';
 import dayjs from 'dayjs';
 import mappedServicesJSON from "@/data/mappedServices.json"
 import { useCookies } from 'next-client-cookies';
+import { PeriodOptions } from '@/components/PeriodOptions';
 
 export default function Dashboard() {
     const [meteorData, setMeteorData] = useState<typeof data>([])
@@ -54,7 +55,7 @@ export default function Dashboard() {
             const { address } = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`).then(response => response.json())
             // setIsTheFirstAcess({lat, lon, city: decodedToken.city})
 
-            setFilters({ state: address?.municipality?.toUpperCase(), coordinates: availableCoordinatesData[0], dateRange: {start: '2022-1-1', end: '2022-1-15'}, services: ['t'] })
+            setFilters((prev: filtersType) => ({ ...prev, state: address?.municipality?.toUpperCase(), coordinates: availableCoordinatesData[0] }))
         }   
 
         getUserInfoAndStore()
@@ -113,27 +114,28 @@ export default function Dashboard() {
     }, [filters.state, filters.coordinates, filters.dateRange])
 
     console.log('filters', filters)
-    // const mappedServices: { [key: string]: string } = mappedServicesJSON
+    const mappedServices: { [key: string]: string } = mappedServicesJSON
 
     return (
         <ThemeContext.Provider value={{loading, rawStationsData, meteorData, setMeteorData, filters, setFilters, availableCoordinates}}>
             <main className="w-full min-h-[120vh] grid grid-cols-[66%_34%] p-8 gap-7 bg-slate-50">
                 <section className='w-full h-full'>
-                    <Typography variant="h6" component="h2">Resultados para a pesquisa:</Typography>
+                    <Typography variant="h6" component="h2" color='#000'>Resultados para a pesquisa:</Typography>
                     <ul className='mt-3'>
                         <li className='capitalize'>
-                            <Typography variant="subtitle2" gutterBottom>Localidade: {filters.state}</Typography>
+                            <Typography variant="subtitle2" gutterBottom color='#000'>Localidade: {filters.state}</Typography>
                         </li>
                         <li>
-                            <Typography variant="subtitle2" gutterBottom>Período: {dayjs(filters.dateRange.start).format('DD/MM/YYYY')} - {dayjs(filters.dateRange.end).format('DD/MM/YYYY')}</Typography>
+                            <Typography variant="subtitle2" gutterBottom color='#000'>Período: {dayjs(filters.dateRange.start).format('DD/MM/YYYY')} - {dayjs(filters.dateRange.end).format('DD/MM/YYYY')}</Typography>
                         </li>
                         <li>
-                            <Typography variant="subtitle2" gutterBottom>Serviço: </Typography>
+                            <Typography variant="subtitle2" gutterBottom color='#000'>Serviço: {mappedServices[filters.services[0]]}</Typography>
                         </li>
                     </ul>
 
-                    <div className='mb-5'>
-                        <SelectService />
+                    <div className='flex flex-col gap-4 my-5'>
+                        <ServiceOptions />
+                        <PeriodOptions />
                     </div>
 
                     <Chart />

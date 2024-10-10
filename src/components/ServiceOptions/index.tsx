@@ -1,7 +1,7 @@
 'use client'
 import stationsContext, { filtersType } from "@/app/dashboard/context";
 import {Select, SelectItem} from "@nextui-org/select";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {Button} from "@nextui-org/button";
 import { CiDroplet, CiTempHigh } from "react-icons/ci";
 import { IoRainyOutline } from "react-icons/io5";
@@ -14,7 +14,7 @@ export const services = [
     { value: 'rh', label: 'Umidade' },
   ];
 
-export function SelectService() {
+export function ServiceOptions() {
     const { filters: { services }, setFilters } = useContext(stationsContext)
 
     const markSelectedService = (value: string) => {
@@ -23,6 +23,13 @@ export function SelectService() {
         }
         return 'default'
     }
+
+    useEffect(() => {
+        setFilters((prev: filtersType) => ({...prev, services: ['t']}))
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
 
     return ( 
         <div className="flex gap-2">

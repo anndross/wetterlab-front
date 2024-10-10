@@ -56,26 +56,31 @@ export function UserDropdown() {
       <DropdownSection title="Informações">  
           <DropdownItem
             description="E-mail"
+            className="text-black"
           >
             {user?.email}
           </DropdownItem>
           <DropdownItem
             description="Corporação"
+            className="text-black"
           >
             {user?.company_name}
           </DropdownItem>
           <DropdownItem
             description="País"
+            className="text-black"
           >
             {user?.country}
           </DropdownItem>
           <DropdownItem
             description="Localidade"
+            className="text-black"
           >
             {user?.city}
           </DropdownItem>
           <DropdownItem
             description="Endereço"
+            className="text-black"
           >
             {user?.address}
           </DropdownItem>
