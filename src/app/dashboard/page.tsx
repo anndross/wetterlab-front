@@ -8,19 +8,24 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import data from '@/data/stations.json'
 import { useEffect, useState } from 'react';
-import ThemeContext, { filtersType } from './context';
+import ThemeContext, { filtersType, MeteorData } from './context';
 import dayjs from 'dayjs';
 import mappedServicesJSON from "@/data/mappedServices.json"
 import { useCookies } from 'next-client-cookies';
 import { PeriodOptions } from '@/components/PeriodOptions';
 
 export default function Dashboard() {
-    const [meteorData, setMeteorData] = useState<typeof data>([])
+    const [meteorData, setMeteorData] = useState<MeteorData>({
+        dates: [],
+        stations: [],
+        models: []
+    })
     const [filters, setFilters] = useState<filtersType>({
         state: '',
         coordinates: [], 
         dateRange: { start: '', end: '' },
-        services: ['t']
+        services: ['t'],
+        mean: 1,
     })
     const [loading, setLoading] = useState<boolean>(true)
     const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>([])
@@ -70,34 +75,21 @@ export default function Dashboard() {
          * @description pega todos os dados de stations com base nos filtros
          */
         async function getStationsDataAndStore() {
-            const {state, coordinates: [lat, lon], dateRange: { start, end }} = filters
+            const {state, coordinates: [lat, lon], dateRange: { start, end }, services, mean} = filters
             
-            // const endpointByCoordinate = `http://127.0.0.1:8000/api/meteor/stations?latitude=${lat}&longitude=${lon}&from=${start}&to=${end}`
-            // const endpointByCity = `http://127.0.0.1:8000/api/meteor/stations?location=${state}&from=${start}&to=${end}`
-
-
-            // const isTheFirstAcessCondition = isTheFirstAcess.lat === lat && isTheFirstAcess.lon === lon && isTheFirstAcess.city === state
-
-            // const currentEndpoint = isTheFirstAcessCondition ? endpointByCity : endpointByCoordinate
-
             setLoading(true)
 
-            const forecast = await fetch(`/api/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}`).then(data => data.json())
+            const forecast = await fetch(`http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}&service=${services[0]}&mean=${mean}`).then(data => data.json())
             console.log('forecast', forecast)
 
-            // const meteorDataResponse = await fetch(currentEndpoint)
-            //     .then(response => response.ok && response.json())
-
-            // setIsTheFirstAcess({
-            //     lat, 
-            //     lon, 
-            //     city: state
-            // })
-
-            if(forecast.length) {
+            if('dates' in forecast && 'models' in forecast && 'stations' in forecast) {
                 setMeteorData(forecast)
             } else {
-                setMeteorData([])
+                setMeteorData({
+                    dates: [],
+                    stations: [],
+                    models: []
+                })
             }
 
             setLoading(false)
@@ -111,7 +103,7 @@ export default function Dashboard() {
             getStationsDataAndStore()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.state, filters.coordinates, filters.dateRange])
+    }, [filters.state, filters.coordinates, filters.dateRange, filters.mean, filters.services])
 
     console.log('filters', filters)
     const mappedServices: { [key: string]: string } = mappedServicesJSON
@@ -135,44 +127,14 @@ export default function Dashboard() {
 
                     <div className='flex flex-col gap-4 my-5'>
                         <ServiceOptions />
-                        <PeriodOptions />
                     </div>
 
-                    <Chart />
-                    <div className='flex gap-4 mt-8'>
-                        {/* <Card sx={{ minWidth: 275 }}>
-                            <CardContent>
-                                <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                                    Velocidade do vento
-                                </Typography>
-                                <Typography variant="h5" component="div">
-                                    24km/h
-                                </Typography>
-                                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>lorem ipsum</Typography>
-                                <Typography variant="body2">
-                                lorem ipsum lorem ipsum lorem ipsum
-                                    <br />
-                                    {'"lorem ipsum"'}
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                        <Card sx={{ minWidth: 275 }}>
-                            <CardContent>
-                                <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                                    Velocidade do vento
-                                </Typography>
-                                <Typography variant="h5" component="div">
-                                    24km/h
-                                </Typography>
-                                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>lorem ipsum</Typography>
-                                <Typography variant="body2">
-                                lorem ipsum lorem ipsum lorem ipsum
-                                    <br />
-                                    {'"lorem ipsum"'}
-                                </Typography>
-                            </CardContent>
-                        </Card> */}
-                    </div>            
+                    <div className='grid gap-6 grid-cols-[calc(4%)_calc(96%-24px)]'>
+                        <PeriodOptions />
+                        <div>
+                            <Chart />
+                        </div>
+                    </div>
                 </section>
                 <section className="w-full h-full">
                     <div className="flex flex-col w-full mb-8 gap-4">

@@ -11,29 +11,34 @@ export interface DateRangeRickerProps {
 export function DatePicker({onChange}: DateRangeRickerProps) {
   const { filters: {dateRange: {start, end}}, setFilters } = useContext(stationsContext)
 
-
-  const [value, setValue] = useState<{start: CalendarDate, end: CalendarDate} | null>(null);
+  const defaultStartDate = "2019-01-01"
+  const defaultEndDate = "2019-02-08"
 
 
   useEffect(() => {
-    if(start.length && end.length)
-      setValue({
-        start: parseDate(start),
-        end: parseDate(end),
-      })
+    setFilters((prev: filtersType) => ({
+      ...prev,
+      dateRange: {
+        start: defaultStartDate,
+        end: defaultEndDate,
+      }
+    }))
 
-  }, [start, end])
+  }, [])
 
   return (
     <DateRangePicker
       label="Período"
       labelPlacement="inside"
+      defaultValue={{
+        start: parseDate(defaultStartDate),
+        end: parseDate(defaultEndDate),
+      }}
       className="w-full"
       granularity="day"
       hideTimeZone
       // minValue={parseDate("2024-09-11")}
       // maxValue={parseDate("2024-09-13")}
-      value={value}
       errorMessage="Período máximo selecionado"
       isRequired
       onChange={(datePickerValue) => {

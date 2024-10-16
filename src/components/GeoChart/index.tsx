@@ -13,7 +13,7 @@ export const GeoChart = () => {
   
   const initialState = {
     center: [-7.337, -47.46] as any,
-    zoom: 4.5,
+    zoom: 7,
   };
   
   const [state, setState] = useState(initialState)

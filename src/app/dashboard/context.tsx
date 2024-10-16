@@ -8,21 +8,39 @@ export type filtersType = {
         end: string
     },
     services: string[],
+    mean: number | string
+}
+
+export type MeteorData = {
+    dates: string[],
+    stations: {
+        date: string,
+        value: number
+    }[]
+    models: {
+        date: string,
+        value: number
+    }[]
 }
 
 export type StationsContextType = { 
     rawStationsData: any[], 
-    meteorData: any[], 
-    setMeteorData: (data: []) => void, 
+    meteorData: MeteorData, 
+    setMeteorData: (data: MeteorData) => void, 
     filters: filtersType | any,
     setFilters: (filters: filtersType | any) => void
     loading: boolean
     availableCoordinates: number[][]
 }
 
+
 const stationsContext = createContext<StationsContextType>({
     rawStationsData: [], 
-    meteorData: [], 
+    meteorData: {
+        dates: [],
+        stations: [],
+        models: []
+    }, 
     setMeteorData: () => {},
     loading: true,
     filters: {
@@ -33,6 +51,7 @@ const stationsContext = createContext<StationsContextType>({
             end: ''
         },
         services: [''],
+        mean: 1,
     },
     availableCoordinates: [],
     setFilters: () => {}

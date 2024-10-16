@@ -4,41 +4,26 @@ import stationsContext, { filtersType } from "@/app/dashboard/context";
 import dayjs from "dayjs";
 
 export function PeriodOptions() {
-    const { filters: { dateRange: { start, end } }, setFilters } = useContext(stationsContext)
+    const { filters: { mean }, setFilters } = useContext(stationsContext)
 
-    const [selectedPeriod, setSelectedPeriod] = useState<number>(30)
+    const [selectedPeriod, setSelectedPeriod] = useState<number>(mean || 1)
 
-    const today = dayjs().format('YYYY-MM-DD')
 
-    const periods: { [key: string | number ]: string } = {
-        1: today,
-        7: dayjs().add(7, 'day').format('YYYY-MM-DD'),
-        15: dayjs().add(15, 'day').format('YYYY-MM-DD'),
-        30: dayjs().add(30, 'day').format('YYYY-MM-DD')
-    }
+    // var day = new Date(2022, 1, 1)
+    // const today = dayjs(day).format('YYYY-MM-DD')
 
-    useEffect(() => {
-        if(!start.length && !end.length) return
-
-        if(
-            start !== today || 
-            end !== periods[selectedPeriod]
-        ) {
-            setSelectedPeriod(0)
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [start, end])
-
+    // const periods: { [key: string | number ]: string } = {
+    //     1: today,
+    //     7: dayjs(day).add(7, 'day').format('YYYY-MM-DD'),
+    //     15: dayjs(day).add(15, 'day').format('YYYY-MM-DD'),
+    //     30: dayjs(day).add(30, 'day').format('YYYY-MM-DD')
+    // }
 
     useEffect(() => {
-        if(periods?.[selectedPeriod]) {
+        if(selectedPeriod) {
             setFilters((prev: filtersType) => ({
                 ...prev,
-                dateRange: {
-                    start: today,
-                    end: periods[selectedPeriod]
-                }
+                mean: selectedPeriod
             }))
         }
         
@@ -54,18 +39,18 @@ export function PeriodOptions() {
     }
 
     return (
-        <div className="flex gap-2">
-            <Button onClick={() => handleSelectPeriod(1)} color={markSelectedOption(1)}>
-                1 dia
+        <div className="w-5 flex gap-2 flex-col">
+            <Button className="w-10 max-w-10 min-w-10 h-10" onClick={() => handleSelectPeriod(1)} color={markSelectedOption(1)} title="Média de 1 dia">
+                1
             </Button> 
-            <Button onClick={() => handleSelectPeriod(7)} color={markSelectedOption(7)}>
-                7 dias
+            <Button className="w-10 max-w-10 min-w-10 h-10" onClick={() => handleSelectPeriod(7)} color={markSelectedOption(7)} title="Média de 7 dias">
+                7
             </Button> 
-            <Button onClick={() => handleSelectPeriod(15)} color={markSelectedOption(15)}>
-                15 dias
+            <Button className="w-10 max-w-10 min-w-10 h-10" onClick={() => handleSelectPeriod(15)} color={markSelectedOption(15)} title="Média de 15 dias">
+                15
             </Button> 
-            <Button onClick={() => handleSelectPeriod(30)} color={markSelectedOption(30)}>
-                30 dias
+            <Button className="w-10 max-w-10 min-w-10 h-10" onClick={() => handleSelectPeriod(30)} color={markSelectedOption(30)} title="Média de 30 dias">
+                30
             </Button> 
         </div>
     )
