@@ -87,3 +87,11 @@ header {
   z-index: 0;
   border-radius: 10px;
 }
+
+
+/* Mui Charts Dots */
+.MuiMarkElement-root.MuiMarkElement-series-auto-generated-id-0.css-1tp0dof-MuiMarkElement-root,
+.MuiMarkElement-root.MuiMarkElement-series-auto-generated-id-1.css-ltrqdd-MuiMarkElement-root {
+  /* diminui a escala dos marcadores no gráfico de linha */
+  scale: 0.65;
+}

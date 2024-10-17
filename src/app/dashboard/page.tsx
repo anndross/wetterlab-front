@@ -2,6 +2,8 @@
 import { Chart } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import { FaLongArrowAltRight } from "react-icons/fa";
 import { ServiceOptions } from "@/components/ServiceOptions";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -13,6 +15,8 @@ import dayjs from 'dayjs';
 import mappedServicesJSON from "@/data/mappedServices.json"
 import { useCookies } from 'next-client-cookies';
 import { PeriodOptions } from '@/components/PeriodOptions';
+import { Button } from "@nextui-org/button";
+import clsx from 'clsx';
 
 export default function Dashboard() {
     const [meteorData, setMeteorData] = useState<MeteorData>({
@@ -29,6 +33,7 @@ export default function Dashboard() {
     })
     const [loading, setLoading] = useState<boolean>(true)
     const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>([])
+    const [showMap, setShowMap] = useState<boolean>(false)
 
 
     // const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
@@ -108,41 +113,65 @@ export default function Dashboard() {
     console.log('filters', filters)
     const mappedServices: { [key: string]: string } = mappedServicesJSON
 
+    // responsável por recarregar o gráfico quando o layout mudar
+    useEffect(() => {
+        setLoading(true)
+
+        setTimeout(() => {
+            setLoading(false)
+        }, 200)
+
+    }, [showMap])
+
     return (
         <ThemeContext.Provider value={{loading, rawStationsData, meteorData, setMeteorData, filters, setFilters, availableCoordinates}}>
-            <main className="w-full min-h-[120vh] grid grid-cols-[66%_34%] p-8 gap-7 bg-slate-50">
-                <section className='w-full h-full'>
-                    <Typography variant="h6" component="h2" color='#000'>Resultados para a pesquisa:</Typography>
-                    <ul className='mt-3'>
-                        <li className='capitalize'>
-                            <Typography variant="subtitle2" gutterBottom color='#000'>Localidade: {filters.state}</Typography>
-                        </li>
-                        <li>
-                            <Typography variant="subtitle2" gutterBottom color='#000'>Período: {dayjs(filters.dateRange.start).format('DD/MM/YYYY')} - {dayjs(filters.dateRange.end).format('DD/MM/YYYY')}</Typography>
-                        </li>
-                        <li>
-                            <Typography variant="subtitle2" gutterBottom color='#000'>Serviço: {mappedServices[filters.services[0]]}</Typography>
-                        </li>
-                    </ul>
+            <main 
+                className={"w-full min-h-[120vh] flex flex-col p-8 gap-2 bg-slate-50 overflow-hidden"}
+            >
+                <section className='w-full h-full flex justify-between items-end'>
+                    {/* Informações dos filtros e seletor de serviço */}
+                    <div className=''>
+                        <Typography variant="h6" component="h2" color='#000'>Resultados para a pesquisa:</Typography>
 
-                    <div className='flex flex-col gap-4 my-5'>
+                        <ul className='mt-3'>
+                            <li className='capitalize'>
+                                <Typography variant="subtitle2" gutterBottom color='#000'>Localidade: {filters.state}</Typography>
+                            </li>
+                            <li>
+                                <Typography variant="subtitle2" gutterBottom color='#000'>Período: {dayjs(filters.dateRange.start).format('DD/MM/YYYY')} - {dayjs(filters.dateRange.end).format('DD/MM/YYYY')}</Typography>
+                            </li>
+                            <li>
+                                <Typography variant="subtitle2" gutterBottom color='#000'>Serviço: {mappedServices[filters.services[0]]}</Typography>
+                            </li>
+                        </ul>
+
                         <ServiceOptions />
                     </div>
 
-                    <div className='grid gap-6 grid-cols-[calc(4%)_calc(96%-24px)]'>
-                        <PeriodOptions />
-                        <div>
-                            <Chart />
-                        </div>
-                    </div>
-                </section>
-                <section className="w-full h-full">
-                    <div className="flex flex-col w-full mb-8 gap-4">
+                    {/* Calendário */}
+                    <div className={clsx({
+                        "w-64 flex flex-col gap-2 items-end": true,
+                    })}>
                         <DatePicker onChange={(value) => {
                             console.log(value)
                         }} />
+                        <Button className='w-12 min-w-12 max-w-12' onClick={() => setShowMap((prev) => !prev)}>
+                            { showMap ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
+                        </Button>
                     </div>
-                    <GeoChart />
+                </section>
+
+                {/* Seletor de médias + gráfico + mapa */}
+                <section className={clsx({
+                    "w-full h-full overflow-hidden grid duration-75 gap-3": true,
+                    "grid-cols-[calc(5%-12px)_calc(65%-12px)_30%]": showMap,
+                    "grid-cols-[calc(5%-12px)_calc(90%-12px)_5%]": !showMap
+                })}>
+                    <PeriodOptions />
+                    <Chart />
+                    <div className='w-full h-full overflow-hidden'>
+                        <GeoChart />
+                    </div>
                 </section>
             </main>
         </ThemeContext.Provider>

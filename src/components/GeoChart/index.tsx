@@ -46,7 +46,7 @@ export const GeoChart = () => {
   };
 
   return (
-    <div className='w-full h-full'>
+    <div className='w-96 h-full'>
       <MapContainer center={state.center} zoom={state.zoom} scrollWheelZoom={false}>
         <LocationFinderDummy />
         <TileLayer
