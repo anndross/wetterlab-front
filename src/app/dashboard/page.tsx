@@ -17,6 +17,7 @@ import { useCookies } from 'next-client-cookies';
 import { PeriodOptions } from '@/components/PeriodOptions';
 import { Button } from "@nextui-org/button";
 import clsx from 'clsx';
+import { RefTimesOptions } from '@/components/RefTimesOptions';
 
 export default function Dashboard() {
     const [meteorData, setMeteorData] = useState<MeteorData>({
@@ -30,6 +31,7 @@ export default function Dashboard() {
         dateRange: { start: '', end: '' },
         services: ['t'],
         mean: 1,
+        refTime: '',
     })
     const [loading, setLoading] = useState<boolean>(true)
     const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>([])
@@ -73,18 +75,18 @@ export default function Dashboard() {
 
 
     /**
-     * @description useEffect responsável pelo armazenamento dos dados de stations com base nos filtros
+     * @description useEffect responsável pelo armazenamento dos dados de stations e models com base nos filtros
      */
     useEffect(() => {
         /**
          * @description pega todos os dados de stations com base nos filtros
          */
         async function getStationsDataAndStore() {
-            const {state, coordinates: [lat, lon], dateRange: { start, end }, services, mean} = filters
+            const {state, coordinates: [lat, lon], dateRange: { start, end }, services, mean, refTime} = filters
             
             setLoading(true)
 
-            const forecast = await fetch(`http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}&service=${services[0]}&mean=${mean}`).then(data => data.json())
+            const forecast = await fetch(`http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}&service=${services[0]}&mean=${mean}&reftime=${refTime}`).then(data => data.json())
             console.log('forecast', forecast)
 
             if('dates' in forecast && 'models' in forecast && 'stations' in forecast) {
@@ -108,7 +110,7 @@ export default function Dashboard() {
             getStationsDataAndStore()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.state, filters.coordinates, filters.dateRange, filters.mean, filters.services])
+    }, [filters.state, filters.coordinates, filters.dateRange, filters.mean, filters.services, filters.refTime])
 
     console.log('filters', filters)
     const mappedServices: { [key: string]: string } = mappedServicesJSON
@@ -145,7 +147,17 @@ export default function Dashboard() {
                             </li>
                         </ul>
 
-                        <ServiceOptions />
+                        <div className='flex gap-8 mt-4'>
+                            <div className='flex flex-col gap-1'>
+                                <Typography variant="subtitle2" gutterBottom color='#3c3c3c'>Selecione o serviço:</Typography>
+                                <ServiceOptions />
+                            </div>
+
+                            <div className='flex flex-col gap-1'>
+                                <Typography variant="subtitle2" gutterBottom color='#3c3c3c'>Selecione a média:</Typography>
+                                <PeriodOptions />
+                            </div>
+                        </div>
                     </div>
 
                     {/* Calendário */}
@@ -155,6 +167,7 @@ export default function Dashboard() {
                         <DatePicker onChange={(value) => {
                             console.log(value)
                         }} />
+                        <RefTimesOptions />
                         <Button className='w-12 min-w-12 max-w-12' onClick={() => setShowMap((prev) => !prev)}>
                             { showMap ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
                         </Button>
@@ -163,11 +176,10 @@ export default function Dashboard() {
 
                 {/* Seletor de médias + gráfico + mapa */}
                 <section className={clsx({
-                    "w-full h-full overflow-hidden grid duration-75 gap-3": true,
-                    "grid-cols-[calc(5%-12px)_calc(65%-12px)_30%]": showMap,
-                    "grid-cols-[calc(5%-12px)_calc(90%-12px)_5%]": !showMap
+                    "w-full h-full overflow-hidden grid duration-150 gap-3": true,
+                    "grid-cols-[calc(100%-396px)_384px]": showMap,
+                    "grid-cols-[calc(95%-12px)_5%]": !showMap
                 })}>
-                    <PeriodOptions />
                     <Chart />
                     <div className='w-full h-full overflow-hidden'>
                         <GeoChart />

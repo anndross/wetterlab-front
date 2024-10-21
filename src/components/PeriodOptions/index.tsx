@@ -39,7 +39,7 @@ export function PeriodOptions() {
     }
 
     return (
-        <div className="w-5 flex gap-2 flex-col">
+        <div className="w-5 flex gap-2">
             <Button className="w-10 max-w-10 min-w-10 h-10" onClick={() => handleSelectPeriod(1)} color={markSelectedOption(1)} title="Média de 1 dia">
                 1
             </Button> 

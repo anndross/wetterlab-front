@@ -8,7 +8,8 @@ export type filtersType = {
         end: string
     },
     services: string[],
-    mean: number | string
+    mean: number | string,
+    refTime: string
 }
 
 export type MeteorData = {
@@ -52,6 +53,7 @@ const stationsContext = createContext<StationsContextType>({
         },
         services: [''],
         mean: 1,
+        refTime: ''
     },
     availableCoordinates: [],
     setFilters: () => {}
