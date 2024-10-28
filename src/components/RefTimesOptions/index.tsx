@@ -41,7 +41,7 @@ export function RefTimesOptions() {
     return (
         <Select 
             label="Selecione o tempo de rodada" 
-            className="w-full"
+            className="w-64"
             selectedKeys={[value]}
             onChange={handleSelectionChange}
         >

@@ -34,7 +34,7 @@ export function DatePicker({onChange}: DateRangeRickerProps) {
         start: parseDate(defaultStartDate),
         end: parseDate(defaultEndDate),
       }}
-      className="w-full"
+      className="w-64"
       granularity="day"
       hideTimeZone
       // minValue={parseDate("2024-09-11")}

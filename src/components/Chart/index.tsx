@@ -1,10 +1,11 @@
 'use client'
 import stationsContext from "@/app/dashboard/context";
 import { BarChart, LineChart } from "@mui/x-charts";
+import { Chart as GoogleChart } from "react-google-charts";
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json"
-import { useContext } from "react";
+import React, { useContext } from "react";
 import {Spinner} from "@nextui-org/spinner";
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 import utc from 'dayjs/plugin/utc.js'
@@ -99,6 +100,79 @@ export function Chart() {
             height={400}
           />
       }
+    </div>
+  );
+}
+export const data = [
+  [
+    { type: "date", label: "Date" },
+    { type: "number", label: "Value" },
+    { id: "i0", type: "number", role: "interval" },
+    { id: "i1", type: "number", role: "interval" },
+  ],
+  [new Date(1996, 1, 1), 1000, 900, 1100],
+  [new Date(1997, 1, 1), 1170, 1000, 1300],
+  [new Date(1998, 1, 1), 660, 550, 800],
+  [new Date(1999, 1, 1), 1030, 900, 1150],
+  [new Date(2000, 1, 1), 1200, 1100, 1300],
+  [new Date(2001, 1, 1), 940, 870, 1010],
+  [new Date(2002, 1, 1), 1170, 1070, 1270],
+  [new Date(2003, 1, 1), 660, 600, 720],
+  [new Date(2004, 1, 1), 1030, 950, 1110],
+  [new Date(2005, 1, 1), 1200, 1100, 1300],
+  [new Date(2006, 1, 1), 940, 870, 1010],
+  [new Date(2007, 1, 1), 1170, 1070, 1270],
+  [new Date(2008, 1, 1), 660, 550, 800],
+  [new Date(2009, 1, 1), 1030, 900, 1150],
+];
+
+export const options = {
+  title: "",
+  curveType: "function",
+  series: [{ color: "#E7711B" }],
+  intervals: { style: "area" }, // Style the intervals as an area
+  legend: "none",
+  chartArea: { height: "80%", width: "90%" },
+  hAxis: { slantedText: false },
+  vAxis: { viewWindow: { min: 500, max: 1500 } },
+};
+
+export function GoogleChartComponent() {
+  return (
+    <div className="min-w-full flex items-center justify-center min-h-[700px] bg-white rounded-3xl relative">
+      <GoogleChart
+        chartType="LineChart"
+        width="80%"
+        height="400px"
+        data={data}
+        options={options}
+        chartPackages={["corechart", "controls"]}
+        controls={[
+          {
+            controlType: "ChartRangeFilter",
+            options: {
+              filterColumnIndex: 0,
+              ui: {
+                chartType: "LineChart",
+                chartOptions: {
+                  chartArea: { width: "90%", height: "50%" },
+                  hAxis: { baselineColor: "none" },
+                  intervals: { style: "area" }, // Apply interval styling to the range chart as well
+                },
+              },
+            },
+            controlPosition: "bottom",
+            controlWrapperParams: {
+              state: {
+                range: {
+                  start: new Date(1997, 1, 1),
+                  end: new Date(2002, 1, 1),
+                },
+              },
+            },
+          },
+        ]}
+      />
     </div>
   );
 }

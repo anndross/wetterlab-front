@@ -1,5 +1,5 @@
 'use client'
-import { Chart } from '@/components/Chart';
+import { Chart, GoogleChartComponent } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
 import { FaLongArrowAltLeft } from "react-icons/fa";
@@ -162,12 +162,14 @@ export default function Dashboard() {
 
                     {/* Calendário */}
                     <div className={clsx({
-                        "w-64 flex flex-col gap-2 items-end": true,
+                        "flex flex-col gap-2 items-end": true,
                     })}>
-                        <DatePicker onChange={(value) => {
-                            console.log(value)
-                        }} />
-                        <RefTimesOptions />
+                        <div className='flex gap-2'>
+                            <RefTimesOptions />
+                            <DatePicker onChange={(value) => {
+                                console.log(value)
+                            }} />
+                        </div>
                         <Button className='w-12 min-w-12 max-w-12' onClick={() => setShowMap((prev) => !prev)}>
                             { showMap ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
                         </Button>
@@ -180,7 +182,10 @@ export default function Dashboard() {
                     "grid-cols-[calc(100%-396px)_384px]": showMap,
                     "grid-cols-[calc(95%-12px)_5%]": !showMap
                 })}>
-                    <Chart />
+                    <div className='flex flex-col w-full gap-3'>
+                        <Chart />
+                        <GoogleChartComponent />
+                    </div>
                     <div className='w-full h-full overflow-hidden'>
                         <GeoChart />
                     </div>
