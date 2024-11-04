@@ -1,5 +1,5 @@
 'use client'
-import { Chart, GoogleChartComponent } from '@/components/Chart';
+import { Chart, LineChartWithConfidenceAndRange, PlotlyChart } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
 import { FaLongArrowAltLeft } from "react-icons/fa";
@@ -183,8 +183,10 @@ export default function Dashboard() {
                     "grid-cols-[calc(95%-12px)_5%]": !showMap
                 })}>
                     <div className='flex flex-col w-full gap-3'>
-                        <Chart />
-                        <GoogleChartComponent />
+                        {/* <Chart />
+                        <LineChartWithConfidenceAndRange /> */}
+                        <PlotlyChart />
+                        {/* <GoogleChartComponent /> */}
                     </div>
                     <div className='w-full h-full overflow-hidden'>
                         <GeoChart />
