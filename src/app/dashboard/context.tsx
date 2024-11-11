@@ -10,6 +10,16 @@ export type filtersType = {
     services: string[],
     mean: number | string,
     refTime: string
+    zoom: {
+        y: {
+            from: string,
+            to: string
+        },
+        x: {
+            from: string,
+            to: string
+        }
+    }
 }
 
 export type MeteorData = {
@@ -53,7 +63,17 @@ const stationsContext = createContext<StationsContextType>({
         },
         services: [''],
         mean: 1,
-        refTime: ''
+        refTime: '',
+        zoom: {
+            y: {
+                from: '',
+                to: ''
+            },
+            x: {
+                from: '',
+                to: ''
+            }
+        }
     },
     availableCoordinates: [],
     setFilters: () => {}

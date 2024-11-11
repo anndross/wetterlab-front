@@ -32,6 +32,16 @@ export default function Dashboard() {
         services: ['t'],
         mean: 1,
         refTime: '',
+        zoom: {
+            y: {
+                from: '',
+                to: ''
+            },
+            x: {
+                from: '',
+                to: ''
+            }
+        }
     })
     const [loading, setLoading] = useState<boolean>(true)
     const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>([])
@@ -144,6 +154,16 @@ export default function Dashboard() {
                             </li>
                             <li>
                                 <Typography variant="subtitle2" gutterBottom color='#000'>Serviço: {mappedServices[filters.services[0]]}</Typography>
+                            </li>
+                            <li>
+                                <Typography variant="subtitle2" gutterBottom color='#000'>
+                                    Zoom X: {filters.zoom.x.from} - {filters.zoom.x.to}
+                                </Typography>
+                            </li>
+                            <li>
+                                <Typography variant="subtitle2" gutterBottom color='#000'>
+                                    Zoom Y: {filters.zoom.y.from} - {filters.zoom.y.to}
+                                </Typography>
                             </li>
                         </ul>
 

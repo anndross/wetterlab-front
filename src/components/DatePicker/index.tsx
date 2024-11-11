@@ -4,6 +4,7 @@ import {parseZonedDateTime, parseDate, today, CalendarDate} from "@international
 import { useContext, useEffect, useState } from "react";
 import stationsContext, { filtersType } from "@/app/dashboard/context";
 import dayjs from "dayjs";
+import { I18nProvider } from "@react-aria/i18n";
 export interface DateRangeRickerProps {
   onChange: (dateRangePickerValues: {start: string, end: string}) => void
 }
@@ -49,6 +50,7 @@ export function DatePicker({onChange}: DateRangeRickerProps) {
 
         setFilters((prev: filtersType) => ({...prev, dateRange: mappedDate }))
       }}
+      
     />
   );
 }

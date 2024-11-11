@@ -1,11 +1,11 @@
 'use client'
-import stationsContext from "@/app/dashboard/context";
+import stationsContext, { filtersType } from "@/app/dashboard/context";
 // import { BarChart, LineChart } from "@mui/x-charts";
 import { Chart as GoogleChart } from "react-google-charts";
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json"
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {Spinner} from "@nextui-org/spinner";
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
 import utc from 'dayjs/plugin/utc.js'
@@ -104,11 +104,11 @@ export interface ChartProps {
 //   );
 // }
 import Plot from 'react-plotly.js';
-
+import Plotly from 'plotly.js';
 
 
 export const PlotlyChart = () => {
-  const { meteorData, loading } = useContext(stationsContext)
+  const { meteorData, loading, setFilters } = useContext(stationsContext)
 
   function randomNumber(num: number) {
     const min = num / 1.2;
@@ -216,17 +216,85 @@ export const PlotlyChart = () => {
 
   console.log('plotData', plotData, loading)
 
+  const isRelayouting = useRef(false)
+
+  const handleRelayout = (event: any) => {
+    console.log(dayjs('handleRelayout', event["xaxis.range[0]"]).format('DD/MM/YYYY'))
+    console.log('handleRelayout', event)
+    // Verifique se o relayout está sendo acionado pela própria atualização de estado
+    if (isRelayouting.current) {
+      return; // Ignora o evento se o relayout já está em andamento
+    }
+
+    // Salve os intervalos x e y do evento
+    const xRange = event["xaxis.range[0]"];
+    const yRange = event["yaxis.range"];
+
+    // Atualize o estado com os novos valores de zoom
+    setFilters((prev: filtersType) => ({
+      ...prev,
+      zoom: {
+        x: {
+          from: dayjs(event["xaxis.range[0]"]).format('DD/MM/YYYY'),
+          to: dayjs(event["xaxis.range[1]"]).format('DD/MM/YYYY'),
+        },
+        y: {
+          from: event["yaxis.range[0]"],
+          to: event["yaxis.range[0]"]
+        }
+      }
+    }));
+
+    // Evite o loop infinito configurando o flag para verdadeiro
+    isRelayouting.current = true;
+
+    if (isRelayouting.current) {
+      Plotly.relayout('plotly-js', event);
+    }
+    // Simula a alteração do layout com os novos valores
+    setTimeout(() => {
+      isRelayouting.current = false; // Resetando o flag após a alteração
+    }, 10);
+  };
+
+
+  var icon1 = {
+
+    'width': 500,
+  
+    'height': 600,
+  
+    'path': 'M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z'
+  
+  }
+  const downloadImage = () => {
+    Plotly.downloadImage('plotly-js', {
+      format: 'png',  // Formatos disponíveis: 'jpeg', 'png', 'svg', 'webp'
+      filename: 'grafico-plotly',
+      height: 600,
+      width: 800,
+    });
+  };
+
   return (
-    <div className="min-w-full min-h-96 bg-white rounded-3xl relative">
+    <div className="min-w-full min-h-[550px] bg-white rounded-3xl relative">
       {loading || !plotData[0].x.length || !plotData[3].y.length
         ? <Spinner className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" size="lg" />
         : <Plot
             data={plotData}
+            divId="plotly-js"
             layout={{
               title: 'Dados dos observados e previsões',
               xaxis: { title: 'Data' },
               yaxis: { title: 'Valores' },
               showlegend: true,
+              legend: {
+                orientation: 'h', // Orienta a legenda horizontalmente
+                y: -0.3, // Move a legenda para baixo do gráfico
+                x: 0.5, // Centraliza a legenda na horizontal
+                xanchor: 'center', // Âncora horizontal no centro
+                yanchor: 'top', // Âncora vertical no topo para evitar sobreposição
+              },
             }}
             config={{
               responsive: true,
@@ -234,9 +302,12 @@ export const PlotlyChart = () => {
                 'zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 
                 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian',
               ], // Remove todos os botões indesejados
-              modeBarButtonsToAdd: ['resetScale2d'], // Adiciona apenas o botão de reset
+              displayModeBar: true,
+              locale: 'pt-br',
               displaylogo: false, // Remove o logo do Plotly
             }}
+            onRelayout={handleRelayout}
+            // on
             useResizeHandler={true}
             style={{ width: '100%', height: '100%' }}
           />

@@ -95,3 +95,10 @@ header {
   /* diminui a escala dos marcadores no gráfico de linha */
   scale: 0.65;
 }
+
+/* Plotly.js chart tooltip */ 
+.js-plotly-plot .plotly [data-title]::before, .js-plotly-plot .plotly [data-title]::after {
+  top: 195% !important;
+  right: unset !important;
+  left: 50%;
+}
