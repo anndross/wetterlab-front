@@ -10,28 +10,30 @@ export type filtersType = {
     services: string[],
     mean: number | string,
     refTime: string
-    zoom: {
-        y: {
-            from: string,
-            to: string
-        },
-        x: {
-            from: string,
-            to: string
-        }
-    }
 }
 
 export type MeteorData = {
     dates: string[],
     stations: {
-        date: string,
-        value: number
+        x: string[],
+        y: number[]
     }[]
     models: {
-        date: string,
-        value: number
+        x: string[],
+        y: number[]
     }[]
+}
+
+
+export type ZoomInfo = {
+    y: {
+        from: number,
+        to: number
+    },
+    x: {
+        from: string,
+        to: string
+    }
 }
 
 export type StationsContextType = { 
@@ -42,6 +44,8 @@ export type StationsContextType = {
     setFilters: (filters: filtersType | any) => void
     loading: boolean
     availableCoordinates: number[][]
+    zoomInfo: ZoomInfo
+    setZoomInfo: (data: ZoomInfo) => void, 
 }
 
 
@@ -64,19 +68,20 @@ const stationsContext = createContext<StationsContextType>({
         services: [''],
         mean: 1,
         refTime: '',
-        zoom: {
-            y: {
-                from: '',
-                to: ''
-            },
-            x: {
-                from: '',
-                to: ''
-            }
-        }
     },
     availableCoordinates: [],
-    setFilters: () => {}
+    setFilters: () => {},
+    zoomInfo: {
+        y: {
+            from: 0,
+            to: 0
+        },
+        x: {
+            from: '',
+            to: ''
+        }
+    },
+    setZoomInfo: () => {},
 })
 
 export default stationsContext

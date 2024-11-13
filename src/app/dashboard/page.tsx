@@ -1,5 +1,5 @@
 'use client'
-import { Chart, LineChartWithConfidenceAndRange, PlotlyChart } from '@/components/Chart';
+import { PlotlyChart } from '@/components/Chart';
 import {DatePicker} from "@/components/DatePicker";
 import { GeoChart } from "@/components/GeoChart";
 import { FaLongArrowAltLeft } from "react-icons/fa";
@@ -10,7 +10,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import data from '@/data/stations.json'
 import { useEffect, useState } from 'react';
-import ThemeContext, { filtersType, MeteorData } from './context';
+import ThemeContext, { filtersType, MeteorData, ZoomInfo } from './context';
 import dayjs from 'dayjs';
 import mappedServicesJSON from "@/data/mappedServices.json"
 import { useCookies } from 'next-client-cookies';
@@ -31,16 +31,16 @@ export default function Dashboard() {
         dateRange: { start: '', end: '' },
         services: ['t'],
         mean: 1,
-        refTime: '',
-        zoom: {
-            y: {
-                from: '',
-                to: ''
-            },
-            x: {
-                from: '',
-                to: ''
-            }
+        refTime: ''
+    })
+    const [zoomInfo, setZoomInfo] = useState<ZoomInfo>({
+        y: {
+            from: 0,
+            to: 0
+        },
+        x: {
+            from: '',
+            to: ''
         }
     })
     const [loading, setLoading] = useState<boolean>(true)
@@ -70,9 +70,11 @@ export default function Dashboard() {
             // }).then(response => response.json())
             const availableCoordinatesData = await fetch('/api/available-services?customer_id=1').then(res => res.ok && res.json())
             
+            // if(!availableCoordinates.length) return
+
             setAvailableCoordinates(availableCoordinatesData)
             
-            const [lat, lon] = availableCoordinatesData[0]
+            const [lat, lon] = availableCoordinatesData?.[0]
 
             const { address } = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`).then(response => response.json())
             // setIsTheFirstAcess({lat, lon, city: decodedToken.city})
@@ -136,7 +138,7 @@ export default function Dashboard() {
     }, [showMap])
 
     return (
-        <ThemeContext.Provider value={{loading, rawStationsData, meteorData, setMeteorData, filters, setFilters, availableCoordinates}}>
+        <ThemeContext.Provider value={{loading, rawStationsData, meteorData, setMeteorData, filters, setFilters, availableCoordinates, zoomInfo, setZoomInfo}}>
             <main 
                 className={"w-full min-h-[120vh] flex flex-col p-8 gap-2 bg-slate-50 overflow-hidden"}
             >
@@ -156,13 +158,13 @@ export default function Dashboard() {
                                 <Typography variant="subtitle2" gutterBottom color='#000'>Serviço: {mappedServices[filters.services[0]]}</Typography>
                             </li>
                             <li>
-                                <Typography variant="subtitle2" gutterBottom color='#000'>
-                                    Zoom X: {filters.zoom.x.from} - {filters.zoom.x.to}
+                                <Typography id="zoom-x" variant="subtitle2" gutterBottom color='#000'>
+                                    Zoom X: nenhum zoom foi aplicado
                                 </Typography>
                             </li>
                             <li>
-                                <Typography variant="subtitle2" gutterBottom color='#000'>
-                                    Zoom Y: {filters.zoom.y.from} - {filters.zoom.y.to}
+                                <Typography id="zoom-y" variant="subtitle2" gutterBottom color='#000'>
+                                    Zoom Y: nenhum zoom foi aplicado
                                 </Typography>
                             </li>
                         </ul>
