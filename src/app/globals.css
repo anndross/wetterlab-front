@@ -115,3 +115,11 @@ header {
 .modebar-btn[data-title="Download plot as a png"] .icon {
   display: none;
 } */
+
+/* .group[data-has-helper="true"] .group-data-\[has-helper\=true\]\:flex {
+  display: none !important;
+} */
+
+.js-plotly-plot .plotly .main-svg {
+  border-radius: 1.5rem;
+}
