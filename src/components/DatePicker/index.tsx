@@ -15,31 +15,40 @@ export function DatePicker() {
   const {
     filters: {
       dateRange: { start, end },
+      coordinates: [lat, lon],
     },
     setFilters,
   } = useContext(stationsContext);
 
-  const defaultStartDate = "2018-08-01";
-  const defaultEndDate = "2019-02-08";
-
   useEffect(() => {
-    setFilters((prev: filtersType) => ({
-      ...prev,
-      dateRange: {
-        start: defaultStartDate,
-        end: defaultEndDate,
-      },
-    }));
-  }, []);
+    async function get_inital_dates() {
+      const [from, to] = await fetch(
+        `http://127.0.0.1:8000/api/meteor/most-recent-period?longitude=${lon}&latitude=${lat}`
+      ).then((res) => res.json());
+
+      setFilters((prev: filtersType) => ({
+        ...prev,
+        dateRange: {
+          start: from,
+          end: to,
+        },
+      }));
+    }
+    if (lat && lon) get_inital_dates();
+  }, [lat, lon]);
 
   return (
     <DateRangePicker
       label="Período"
       labelPlacement="outside"
-      defaultValue={{
-        start: parseDate(defaultStartDate),
-        end: parseDate(defaultEndDate),
-      }}
+      value={
+        start.length && end.length
+          ? {
+              start: parseDate(start),
+              end: parseDate(end),
+            }
+          : null
+      }
       className="w-64 m-0 !pb-0 justify-end"
       granularity="day"
       hideTimeZone
