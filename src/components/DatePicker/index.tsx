@@ -5,12 +5,13 @@ import {
   parseDate,
   today,
   CalendarDate,
+  parseAbsoluteToLocal,
 } from "@internationalized/date";
 import { useContext, useEffect, useState } from "react";
 import stationsContext, { filtersType } from "@/app/dashboard/context";
 import dayjs from "dayjs";
 import { I18nProvider } from "@react-aria/i18n";
-
+import { NextUIProvider } from "@nextui-org/react";
 export function DatePicker() {
   const {
     filters: {
@@ -38,32 +39,32 @@ export function DatePicker() {
   }, [lat, lon]);
 
   return (
-    <DateRangePicker
-      label="Período"
-      labelPlacement="outside"
-      value={
-        start.length && end.length
-          ? {
-              start: parseDate(start),
-              end: parseDate(end),
+    <I18nProvider locale="en-GB">
+      <DateRangePicker
+        label="Período"
+        labelPlacement="outside"
+        value={
+          start.length && end.length
+            ? {
+              start: parseAbsoluteToLocal(`${start}T00:00:00Z`),
+              end: parseAbsoluteToLocal(`${end}T00:00:00Z`),
             }
-          : null
-      }
-      className="w-64 m-0 !pb-0 justify-end"
-      granularity="day"
-      hideTimeZone
-      // minValue={parseDate("2024-09-11")}
-      // maxValue={parseDate("2024-09-13")}
-      errorMessage="Período máximo selecionado"
-      isRequired
-      onChange={(datePickerValue) => {
-        const mappedDate = {
-          start: dayjs(datePickerValue.start.toString()).format("YYYY-MM-DD"),
-          end: dayjs(datePickerValue.end.toString()).format("YYYY-MM-DD"),
-        };
+            : null
+        }
+        className="w-64 m-0 !pb-0 justify-end"
+        granularity="day"
+        hideTimeZone
+        errorMessage="Período máximo selecionado"
+        isRequired
+        onChange={(datePickerValue) => {
+          const mappedDate = {
+            start: dayjs(datePickerValue.start.toString()).format("YYYY-MM-DD"),
+            end: dayjs(datePickerValue.end.toString()).format("YYYY-MM-DD"),
+          };
 
-        setFilters((prev: filtersType) => ({ ...prev, dateRange: mappedDate }));
-      }}
-    />
+          setFilters((prev: filtersType) => ({ ...prev, dateRange: mappedDate }));
+        }}
+      />
+    </I18nProvider>
   );
 }

@@ -36,7 +36,6 @@ export default function Dashboard() {
   const [showMap, setShowMap] = useState<boolean>(false);
 
   // const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
-  const rawStationsData = data;
 
   const cookies = useCookies();
 
@@ -139,7 +138,6 @@ export default function Dashboard() {
     <ThemeContext.Provider
       value={{
         loading,
-        rawStationsData,
         meteorData,
         setMeteorData,
         filters,
