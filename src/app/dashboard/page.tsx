@@ -82,9 +82,7 @@ export default function Dashboard() {
      */
     async function getStationsDataAndStore() {
       const {
-        state,
         coordinates: [lat, lon],
-        dateRange: { start, end },
         services,
         mean,
         refTime,
@@ -93,7 +91,7 @@ export default function Dashboard() {
       setLoading(true);
 
       const forecast = await fetch(
-        `http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
+        `http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
       ).then((data) => data.json());
       console.log("forecast", forecast);
 
@@ -116,20 +114,14 @@ export default function Dashboard() {
 
     if (
       filters.coordinates.length &&
-      filters.dateRange.start.length &&
-      filters.dateRange.end.length
+      filters.refTime.length &&
+      filters.mean &&
+      filters.services
     )
       getStationsDataAndStore();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    filters.state,
-    filters.coordinates,
-    filters.dateRange,
-    filters.mean,
-    filters.services,
-    filters.refTime,
-  ]);
+  }, [filters.coordinates, filters.mean, filters.services, filters.refTime]);
 
   console.log("filters", filters);
   const mappedServices: { [key: string]: string } = mappedServicesJSON;
@@ -166,7 +158,6 @@ export default function Dashboard() {
         >
           <div className="flex gap-5 h-full">
             <RefTimesOptions />
-            <DatePicker />
             <ServiceOptions />
             <MeanOptions />
           </div>

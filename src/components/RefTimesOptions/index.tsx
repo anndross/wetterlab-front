@@ -1,5 +1,5 @@
-import { Select, SelectSection, SelectItem } from "@nextui-org/select";
-import { ChangeEventHandler, useContext, useEffect, useState } from "react";
+import { Select, SelectItem } from "@nextui-org/select";
+import { useContext, useEffect, useState } from "react";
 import stationsContext, { filtersType } from "@/app/dashboard/context";
 
 export function RefTimesOptions() {
@@ -22,21 +22,22 @@ export function RefTimesOptions() {
   useEffect(() => {
     const {
       coordinates: [lat, lon],
-      dateRange: { start, end },
     } = filters;
 
     async function setData() {
       const data = await fetch(
-        `http://127.0.0.1:8000/api/meteor/models-reftimes?longitude=${lon}&latitude=${lat}&from=${start}&to=${end}`
+        `http://127.0.0.1:8000/api/meteor/models-reftimes?longitude=${lon}&latitude=${lat}`
       ).then((res) => res.json());
+
+      if (data.length) setValue(data[0].value);
 
       setRefTimes(data);
     }
 
-    if (lat && lon && start && end) setData();
+    if (lat && lon) setData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.coordinates, filters.dateRange]);
+  }, [filters.coordinates]);
 
   const handleSelectionChange = (e: any) => {
     setValue(e.target.value);
@@ -44,9 +45,9 @@ export function RefTimesOptions() {
 
   return (
     <Select
-      label="Rodada"
+      label="Rodadas"
       labelPlacement="outside"
-      placeholder="Selecione o tempo de rodada"
+      placeholder="Selecione a rodada"
       className="w-64 !m-0"
       selectedKeys={[value]}
       onChange={handleSelectionChange}
