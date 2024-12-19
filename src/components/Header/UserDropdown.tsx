@@ -1,39 +1,46 @@
-'use client'
-import {Dropdown, DropdownTrigger, DropdownMenu, DropdownSection, DropdownItem} from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button"
-import { useCookies } from 'next-client-cookies';
+"use client";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownSection,
+  DropdownItem,
+} from "@nextui-org/dropdown";
+import { Button } from "@nextui-org/button";
+import { useCookies } from "next-client-cookies";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 
 export function UserDropdown() {
-  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
-
+  const iconClasses =
+    "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   const cookies = useCookies();
-    const [user, setUser] = useState<any>({})
+  const [user, setUser] = useState<any>({});
 
-    const token =  cookies.get('token')
+  const token = cookies.get("token");
 
   useEffect(() => {
-
     async function getUserInfoAndStore() {
-        const decodedToken = await fetch('http://127.0.0.1:8000/api/erp/decode-token', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({ token: token })
-        }).then(response => response.json())
+      const decodedToken = await fetch(
+        "http://34.23.51.63:8000/api/erp/decode-token",
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({ token: token }),
+        }
+      ).then((response) => response.json());
 
-        setUser(decodedToken)
+      setUser(decodedToken);
     }
 
-    if(token) getUserInfoAndStore()
-  }, [token])
+    if (token) getUserInfoAndStore();
+  }, [token]);
 
-
-  console.log(user)
+  console.log(user);
 
   return (
     <Dropdown
@@ -44,51 +51,34 @@ export function UserDropdown() {
       }}
     >
       <DropdownTrigger>
-        <Button 
-          variant="flat" 
-          isIconOnly
-          color="default"
-        >
-         <CiUser />
+        <Button variant="flat" isIconOnly color="default">
+          <CiUser />
         </Button>
       </DropdownTrigger>
       <DropdownMenu variant="faded" aria-label="Dropdown menu with description">
-      <DropdownSection title="Informações">  
-          <DropdownItem
-            description="E-mail"
-            className="text-black"
-          >
+        <DropdownSection title="Informações">
+          <DropdownItem description="E-mail" className="text-black">
             {user?.email}
           </DropdownItem>
-          <DropdownItem
-            description="Corporação"
-            className="text-black"
-          >
+          <DropdownItem description="Corporação" className="text-black">
             {user?.company_name}
           </DropdownItem>
-          <DropdownItem
-            description="País"
-            className="text-black"
-          >
+          <DropdownItem description="País" className="text-black">
             {user?.country}
           </DropdownItem>
-          <DropdownItem
-            description="Localidade"
-            className="text-black"
-          >
+          <DropdownItem description="Localidade" className="text-black">
             {user?.city}
           </DropdownItem>
-          <DropdownItem
-            description="Endereço"
-            className="text-black"
-          >
+          <DropdownItem description="Endereço" className="text-black">
             {user?.address}
           </DropdownItem>
           <DropdownItem>
-            <Button onClick={() => {
-              cookies.remove('token')
-              window.location.reload()
-            }}>
+            <Button
+              onClick={() => {
+                cookies.remove("token");
+                window.location.reload();
+              }}
+            >
               Sair
             </Button>
           </DropdownItem>

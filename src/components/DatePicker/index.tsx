@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import stationsContext, { filtersType } from "@/app/dashboard/context";
 import dayjs from "dayjs";
 import { I18nProvider } from "@react-aria/i18n";
-import { NextUIProvider } from "@nextui-org/react";
+
 export function DatePicker() {
   const {
     filters: {
@@ -24,7 +24,7 @@ export function DatePicker() {
   useEffect(() => {
     async function get_inital_dates() {
       const [from, to] = await fetch(
-        `http://127.0.0.1:8000/api/meteor/most-recent-period?longitude=${lon}&latitude=${lat}`
+        `http://34.23.51.63:8000/api/meteor/most-recent-period?longitude=${lon}&latitude=${lat}`
       ).then((res) => res.json());
 
       setFilters((prev: filtersType) => ({
@@ -46,9 +46,9 @@ export function DatePicker() {
         value={
           start.length && end.length
             ? {
-              start: parseAbsoluteToLocal(`${start}T00:00:00Z`),
-              end: parseAbsoluteToLocal(`${end}T00:00:00Z`),
-            }
+                start: parseAbsoluteToLocal(`${start}T00:00:00Z`),
+                end: parseAbsoluteToLocal(`${end}T00:00:00Z`),
+              }
             : null
         }
         className="w-64 m-0 !pb-0 justify-end"
@@ -62,7 +62,10 @@ export function DatePicker() {
             end: dayjs(datePickerValue.end.toString()).format("YYYY-MM-DD"),
           };
 
-          setFilters((prev: filtersType) => ({ ...prev, dateRange: mappedDate }));
+          setFilters((prev: filtersType) => ({
+            ...prev,
+            dateRange: mappedDate,
+          }));
         }}
       />
     </I18nProvider>

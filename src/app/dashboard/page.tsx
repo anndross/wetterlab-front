@@ -1,11 +1,10 @@
 "use client";
 import { PlotlyChart } from "@/components/Chart";
 import { DatePicker } from "@/components/DatePicker";
-import { GeoChart } from "@/components/GeoChart";
+import { GeoMap } from "@/components/GeoMap";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { ServiceOptions } from "@/components/ServiceOptions";
-import data from "@/data/stations.json";
 import { useEffect, useState } from "react";
 import ThemeContext, { filtersType, MeteorData } from "./context";
 import mappedServicesJSON from "@/data/mappedServices.json";
@@ -30,47 +29,7 @@ export default function Dashboard() {
     refTime: "",
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>(
-    []
-  );
   const [showMap, setShowMap] = useState<boolean>(false);
-
-  // const [isTheFirstAcess, setIsTheFirstAcess] = useState<any>({})
-
-  const cookies = useCookies();
-
-  /**
-   * @description useEffect responsável pelo carregamento dos filtros iniciais
-   */
-  useEffect(() => {
-    const token = cookies.get("token");
-
-    async function getUserInfoAndStore() {
-      const availableCoordinatesData = await fetch(
-        "http://127.0.0.1:8000/api/erp/available-services?customer_id=1"
-      ).then((res) => res.ok && res.json());
-      const reverseAvailableCoordinatesData =
-        availableCoordinatesData.services[0].locations.map(
-          (location: number[]) => location.reverse()
-        );
-
-      setAvailableCoordinates(reverseAvailableCoordinatesData);
-
-      const [lat, lon] = reverseAvailableCoordinatesData?.[0];
-
-      const { address } = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-      ).then((response) => response.json());
-
-      setFilters((prev: filtersType) => ({
-        ...prev,
-        state: address?.municipality?.toUpperCase(),
-        coordinates: reverseAvailableCoordinatesData[0],
-      }));
-    }
-
-    getUserInfoAndStore();
-  }, [cookies]);
 
   /**
    * @description useEffect responsável pelo armazenamento dos dados de stations e models com base nos filtros
@@ -90,7 +49,7 @@ export default function Dashboard() {
       setLoading(true);
 
       const forecast = await fetch(
-        `http://127.0.0.1:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
+        `http://34.23.51.63:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
       ).then((data) => data.json());
       console.log("forecast", forecast);
 
@@ -142,7 +101,6 @@ export default function Dashboard() {
         setMeteorData,
         filters,
         setFilters,
-        availableCoordinates,
       }}
     >
       <main className={"w-full flex flex-col p-6 gap-4 bg-slate-50"}>
@@ -179,7 +137,7 @@ export default function Dashboard() {
             <PlotlyChart />
           </div>
           <div className="w-full h-full overflow-hidden">
-            <GeoChart />
+            <GeoMap />
           </div>
         </section>
       </main>

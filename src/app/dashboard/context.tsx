@@ -30,7 +30,6 @@ export type StationsContextType = {
   filters: filtersType | any;
   setFilters: (filters: filtersType | any) => void;
   loading: boolean;
-  availableCoordinates: number[][];
 };
 
 const stationsContext = createContext<StationsContextType>({
@@ -39,7 +38,7 @@ const stationsContext = createContext<StationsContextType>({
     stations: [],
     models: [],
   },
-  setMeteorData: () => { },
+  setMeteorData: () => {},
   loading: true,
   filters: {
     state: "",
@@ -52,8 +51,7 @@ const stationsContext = createContext<StationsContextType>({
     mean: 1,
     refTime: "",
   },
-  availableCoordinates: [],
-  setFilters: () => { },
+  setFilters: () => {},
 });
 
 export default stationsContext;

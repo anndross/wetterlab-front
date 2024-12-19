@@ -11,16 +11,6 @@ export function MeanOptions() {
 
   const [meanPeriod, setMeanPeriod] = useState<number>(mean || 1);
 
-  // var day = new Date(2022, 1, 1)
-  // const today = dayjs(day).format('YYYY-MM-DD')
-
-  // const periods: { [key: string | number ]: string } = {
-  //     1: today,
-  //     7: dayjs(day).add(7, 'day').format('YYYY-MM-DD'),
-  //     15: dayjs(day).add(15, 'day').format('YYYY-MM-DD'),
-  //     30: dayjs(day).add(30, 'day').format('YYYY-MM-DD')
-  // }
-
   useEffect(() => {
     if (meanPeriod) {
       setFilters((prev: filtersType) => ({
