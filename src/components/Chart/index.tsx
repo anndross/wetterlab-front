@@ -3,22 +3,19 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { Spinner } from "@nextui-org/spinner";
-import stationsContext, { Forecast } from "@/app/dashboard/context";
-import mappedServicesJSON from "@/data/mappedServices.json";
+import { Forecast } from "@/app/dashboard/context";
 import { preparePlotData } from "./utils/preparePlotData";
 import { handleStoreZoomInfo } from "./utils/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
 import ParamsContext from "@/app/dashboard/context";
+import mappedServicesJSON from "@/data/mappedServices.json";
 
 export const PlotlyChart = () => {
   const { params } = useContext(ParamsContext);
   const { lat, lon, refTime, service, mean } = params;
 
   const [forecast, setForecast] = useState<Forecast>();
-
   const [isPending, startTransition] = useTransition();
-
-  console.log(lat, lon, refTime, service, mean);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -34,7 +31,7 @@ export const PlotlyChart = () => {
     if (lat && lon && refTime && service && mean) handleLoadForecast();
   }, [lat, lon, refTime, service, mean]);
 
-  if (isPending || !forecast?.stations.length || !forecast?.models.length) {
+  if (isPending || !forecast?.stations || !forecast.models) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -92,10 +89,18 @@ export const PlotlyChart = () => {
     ]),
   ];
 
+  const mappedServices: { [key: string]: string } = mappedServicesJSON;
+  const servicesLabel: { [key: string]: string } = {
+    wspd: "m/s",
+    t: "ºC",
+    prate: "mm",
+    rh: "%",
+  };
+
   const layout: Partial<Layout> = {
-    title: "Serviço",
+    title: mappedServices[service],
     xaxis: { title: "Data", fixedrange: false },
-    yaxis: { title: "label", fixedrange: false },
+    yaxis: { title: servicesLabel[service], fixedrange: false },
     showlegend: true,
     legend: {
       orientation: "h",
@@ -143,7 +148,6 @@ export const PlotlyChart = () => {
   );
 };
 
-// const mappedServices: { [key: string]: string } = mappedServicesJSON;
 // const servicesLabel: { [key: string]: string } = {
 //   wspd: "m/s",
 //   t: "ºC",

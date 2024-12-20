@@ -62,6 +62,7 @@ const ParamsContext = createContext<any>({
   refTime: "",
   mean: 1,
   service: "wspd",
+  resize: false,
 });
 
 export default ParamsContext;

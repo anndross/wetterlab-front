@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NextUIProvider } from "@nextui-org/system";
+import { CookiesProvider } from "next-client-cookies/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,11 +22,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx(inter.className, "pt-20")}>
-        <NextUIProvider>
-          {/* <Header /> */}
-          {children}
-          <Footer />
-        </NextUIProvider>
+        <CookiesProvider>
+          <NextUIProvider>
+            <Header />
+            {children}
+            <Footer />
+          </NextUIProvider>
+        </CookiesProvider>
       </body>
     </html>
   );

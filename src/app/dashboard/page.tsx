@@ -1,6 +1,5 @@
 "use client";
 import { PlotlyChart } from "@/components/Chart";
-import { GeoMap } from "@/components/GeoMap";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { ServiceOptions } from "@/components/ServiceOptions";
@@ -10,9 +9,17 @@ import { MeanOptions } from "@/components/MeanOptions";
 import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
+import dynamic from "next/dynamic";
+
+const GeoMapNoSSR = dynamic(
+  () => import("@/components/GeoMap").then((module) => module.GeoMap),
+  {
+    ssr: false,
+  }
+);
 
 export default function Dashboard() {
-  const [showMap, setShowMap] = useState(false);
+  const [resize, setResize] = useState(false);
 
   const [params, setParams] = useState({
     lat: null,
@@ -34,8 +41,8 @@ export default function Dashboard() {
           className={clsx({
             "w-full h-20 overflow-hidden grid items-end duration-150 gap-3":
               true,
-            "grid-cols-[calc(100%-396px)_384px]": showMap,
-            "grid-cols-[calc(95%-12px)_5%]": !showMap,
+            "grid-cols-[calc(100%-396px)_384px]": resize,
+            "grid-cols-[calc(95%-12px)_5%]": !resize,
           })}
         >
           <div className="flex gap-5 h-full">
@@ -46,24 +53,24 @@ export default function Dashboard() {
 
           <Button
             className="w-full min-w-full"
-            onClick={() => setShowMap((prev) => !prev)}
+            onClick={() => setResize((prev) => !prev)}
           >
-            {showMap ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
+            {resize ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
           </Button>
         </section>
 
         <section
           className={clsx({
             "w-full h-full overflow-hidden grid duration-150 gap-3": true,
-            "grid-cols-[calc(100%-396px)_384px]": showMap,
-            "grid-cols-[calc(95%-12px)_5%]": !showMap,
+            "grid-cols-[calc(100%-396px)_384px]": resize,
+            "grid-cols-[calc(95%-12px)_5%]": !resize,
           })}
         >
           <div className="">
             <PlotlyChart />
           </div>
           <div className="w-full h-full overflow-hidden">
-            <GeoMap />
+            <GeoMapNoSSR />
           </div>
         </section>
       </main>
@@ -86,7 +93,7 @@ export default function Dashboard() {
 //     refTime: "",
 //   });
 //   const [loading, setLoading] = useState<boolean>(true);
-//   const [showMap, setShowMap] = useState<boolean>(false);
+//   const [resize, setResize] = useState<boolean>(false);
 
 //   /**
 //    * @description useEffect responsável pelo armazenamento dos dados de stations e models com base nos filtros
@@ -148,7 +155,7 @@ export default function Dashboard() {
 //     setTimeout(() => {
 //       setLoading(false);
 //     }, 100);
-//   }, [showMap]);
+//   }, [resize]);
 
 //   return (
 //     <ParamsContext.Provider
@@ -165,8 +172,8 @@ export default function Dashboard() {
 //           className={clsx({
 //             "w-full h-20 overflow-hidden grid items-end duration-150 gap-3":
 //               true,
-//             "grid-cols-[calc(100%-396px)_384px]": showMap,
-//             "grid-cols-[calc(95%-12px)_5%]": !showMap,
+//             "grid-cols-[calc(100%-396px)_384px]": resize,
+//             "grid-cols-[calc(95%-12px)_5%]": !resize,
 //           })}
 //         >
 //           <div className="flex gap-5 h-full">
@@ -177,17 +184,17 @@ export default function Dashboard() {
 
 //           <Button
 //             className="w-full min-w-full"
-//             onClick={() => setShowMap((prev) => !prev)}
+//             onClick={() => setResize((prev) => !prev)}
 //           >
-//             {showMap ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
+//             {resize ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
 //           </Button>
 //         </section>
 
 //         <section
 //           className={clsx({
 //             "w-full h-full overflow-hidden grid duration-150 gap-3": true,
-//             "grid-cols-[calc(100%-396px)_384px]": showMap,
-//             "grid-cols-[calc(95%-12px)_5%]": !showMap,
+//             "grid-cols-[calc(100%-396px)_384px]": resize,
+//             "grid-cols-[calc(95%-12px)_5%]": !resize,
 //           })}
 //         >
 //           <div className="">
