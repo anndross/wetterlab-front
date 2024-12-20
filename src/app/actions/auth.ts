@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export async function AuthAction(formData: FormData) {
   const email = formData.get("email");
 
-  const api = "/api/erp/login";
+  const api = "http://34.23.51.63:8000/api/erp/login";
 
   const token = await fetch(api, {
     headers: {
