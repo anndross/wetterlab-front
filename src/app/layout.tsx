@@ -1,6 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { clsx } from 'clsx';
+import { clsx } from "clsx";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -20,13 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body className={clsx(inter.className, "pt-20")}>
-          <NextUIProvider>
-            <Header/>
-            {children}
-            <Footer/>
-          </NextUIProvider>
-        </body>
+      <body className={clsx(inter.className, "pt-20")}>
+        <NextUIProvider>
+          {/* <Header /> */}
+          {children}
+          <Footer />
+        </NextUIProvider>
+      </body>
     </html>
   );
 }

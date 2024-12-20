@@ -12,7 +12,7 @@ export type filtersType = {
   refTime: string;
 };
 
-export type MeteorData = {
+export type Forecast = {
   dates: string[];
   stations: {
     x: string[];
@@ -25,33 +25,43 @@ export type MeteorData = {
 };
 
 export type StationsContextType = {
-  meteorData: MeteorData;
-  setMeteorData: (data: MeteorData) => void;
+  meteorData: Forecast;
+  setMeteorData: (data: Forecast) => void;
   filters: filtersType | any;
   setFilters: (filters: filtersType | any) => void;
   loading: boolean;
 };
 
-const stationsContext = createContext<StationsContextType>({
-  meteorData: {
-    dates: [],
-    stations: [],
-    models: [],
-  },
-  setMeteorData: () => {},
-  loading: true,
-  filters: {
-    state: "",
-    coordinates: [],
-    dateRange: {
-      start: "",
-      end: "",
-    },
-    services: [""],
-    mean: 1,
-    refTime: "",
-  },
-  setFilters: () => {},
+// const stationsContext = createContext<StationsContextType>({
+//   meteorData: {
+//     dates: [],
+//     stations: [],
+//     models: [],
+//   },
+//   setMeteorData: () => {},
+//   loading: true,
+//   filters: {
+//     state: "",
+//     coordinates: [],
+//     dateRange: {
+//       start: "",
+//       end: "",
+//     },
+//     services: [""],
+//     mean: 1,
+//     refTime: "",
+//   },
+//   setFilters: () => {},
+// });
+
+// export default stationsContext;
+
+const ParamsContext = createContext<any>({
+  lat: null,
+  lon: null,
+  refTime: "",
+  mean: 1,
+  service: "wspd",
 });
 
-export default stationsContext;
+export default ParamsContext;

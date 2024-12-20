@@ -10,73 +10,72 @@ import {
 import { Icon, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useContext, useEffect, useState } from "react";
-import stationsContext, { filtersType } from "@/app/dashboard/context";
+import { useCookies } from "next-client-cookies";
+import { decodeJWT } from "@/utils/decodeJWT";
+import ParamsContext from "@/app/dashboard/context";
 
 export type LocationType = { latitude: number; longitude: number };
 
-export const GeoMap = () => {
-  const { filters, setFilters } = useContext(stationsContext);
+export const GeoMap: React.FC = () => {
+  const { params, setParams } = useContext(ParamsContext);
+  const { lat, lon } = params;
 
-  const initialState = {
-    center: [-7.337, -47.46] as any,
-    zoom: 7,
-  };
+  const cookies = useCookies();
+  const token = cookies.get("token");
+  const decodedToken = decodeJWT(token ?? "");
+  const customerId = decodedToken?.customer_id;
 
-  const [state, setState] = useState(initialState);
   const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>(
     []
   );
 
   useEffect(() => {
-    const { coordinates } = filters;
-
-    if (coordinates[0] && coordinates[1])
-      setState((prev) => ({ ...prev, center: coordinates }));
-  }, [filters]);
-
-  useEffect(() => {
-    async function getAvailableCoordinates() {
+    async function handleAvailableCoordinates() {
       const availableCoordinatesData = await fetch(
-        "http://34.23.51.63:8000/api/erp/available-services?customer_id=1"
+        `http://34.23.51.63:8000/api/erp/available-services?customer_id=${customerId}`
       ).then((res) => res.ok && res.json());
 
       setAvailableCoordinates(availableCoordinatesData);
 
       const [lat, lon] = availableCoordinatesData[0];
 
-      setFilters((prev: filtersType) => ({
+      // TODO: adicionar tipagem
+      setParams((prev: any) => ({
         ...prev,
-        coordinates: [lat, lon],
+        lat,
+        lon,
       }));
     }
 
-    getAvailableCoordinates();
-  }, [setFilters]);
+    if (customerId) handleAvailableCoordinates();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerId]);
 
   const LocationFinderDummy = () => {
-    const map = useMapEvents({
+    useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng;
 
         const latWithLessPrecision = Number(lat.toFixed(6));
-        const lngWithLessPrecision = Number(lng.toFixed(6));
+        const lonWithLessPrecision = Number(lng.toFixed(6));
 
-        setFilters((prev: filtersType) => ({
+        // TODO: adicionar tipagem
+        setParams((prev: any) => ({
           ...prev,
-          coordinates: [latWithLessPrecision, lngWithLessPrecision],
+          lat: latWithLessPrecision,
+          lon: lonWithLessPrecision,
         }));
       },
     });
     return null;
   };
 
+  const center: LatLngExpression = [lat ?? -7.337, lon ?? -47.46];
+
   return (
     <div className="w-96 h-full">
-      <MapContainer
-        center={state.center}
-        zoom={state.zoom}
-        scrollWheelZoom={false}
-      >
+      <MapContainer center={center} zoom={7} scrollWheelZoom={false}>
         <LocationFinderDummy />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -96,7 +95,7 @@ export const GeoMap = () => {
           })}
 
         <Marker
-          position={state.center}
+          position={center}
           icon={
             new Icon({
               iconUrl: "/assets/marker.png",
@@ -104,9 +103,7 @@ export const GeoMap = () => {
             })
           }
         >
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
+          <Popup>{center.join(", ")}</Popup>
         </Marker>
       </MapContainer>
     </div>

@@ -12,12 +12,13 @@ export function Header() {
   const [show, setShow] = useState(false);
 
   const cookies = useCookies();
+  const token = cookies.get("token");
 
   return (
     <>
       <header className="bg-white w-full fixed top-0 z-20 flex flex-col">
         <div className="w-full h-20 flex justify-between px-[5%] items-center">
-          <Link className="md:hidden" href='/'>
+          <Link className="md:hidden" href="/">
             <Image
               src="/assets/logo.png"
               width={138}
@@ -28,7 +29,7 @@ export function Header() {
           </Link>
 
           <nav className="md:flex hidden gap-6 items-center">
-            <Link href='/'>
+            <Link href="/">
               <Image
                 src="/assets/logo.png"
                 width={138}
@@ -36,7 +37,7 @@ export function Header() {
                 alt="Wetterlab"
                 title="Wetterlab"
               />
-            </Link> 
+            </Link>
             <Link href="">
               <Typography type="span">Sobre</Typography>
             </Link>
@@ -50,20 +51,21 @@ export function Header() {
               <Typography type="span">Blog</Typography>
             </Link>
 
-            {cookies.get('token') &&
+            {token && (
               <Link href="/dashboard">
                 <Typography type="span">Dashboard</Typography>
               </Link>
-            }
+            )}
           </nav>
 
           <div className="md:flex hidden gap-4">
-            {!cookies.get('token') 
-              ? <Link href="/login">
-                  <Button>Login</Button>
-                </Link>
-              : <UserDropdown />
-            }
+            {!token ? (
+              <Link href="/login">
+                <Button>Login</Button>
+              </Link>
+            ) : (
+              <UserDropdown />
+            )}
             <Button variant="secondary">Fale conosco</Button>
           </div>
 

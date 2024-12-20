@@ -1,31 +1,26 @@
 import { Button } from "@nextui-org/button";
-import { useContext, useEffect, useState } from "react";
-import stationsContext, { filtersType } from "@/app/dashboard/context";
-import dayjs from "dayjs";
+import { useContext, useEffect } from "react";
+import ParamsContext from "@/app/dashboard/context";
 
 export function MeanOptions() {
-  const {
-    filters: { mean },
-    setFilters,
-  } = useContext(stationsContext);
-
-  const [meanPeriod, setMeanPeriod] = useState<number>(mean || 1);
+  const { params, setParams } = useContext(ParamsContext);
+  const { mean } = params;
 
   useEffect(() => {
-    if (meanPeriod) {
-      setFilters((prev: filtersType) => ({
-        ...prev,
-        mean: meanPeriod,
-      }));
-    }
-
+    setParams((prev: any) => ({
+      ...prev,
+      mean: 1,
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [meanPeriod]);
+  }, []);
 
-  const handleSelectPeriod = (value: number) => setMeanPeriod(value);
-
+  const handleSelectPeriod = (value: number) =>
+    setParams((prev: any) => ({
+      ...prev,
+      mean: value,
+    }));
   const markSelectedOption = (value: number) => {
-    if (meanPeriod == value) return "primary";
+    if (mean == value) return "primary";
 
     return "default";
   };

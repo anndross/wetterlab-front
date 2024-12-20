@@ -1,6 +1,5 @@
 "use client";
-import stationsContext, { filtersType } from "@/app/dashboard/context";
-import { Select, SelectItem } from "@nextui-org/select";
+import ParamsContext from "@/app/dashboard/context";
 import { useContext, useEffect } from "react";
 import { Button } from "@nextui-org/button";
 import { CiDroplet, CiTempHigh } from "react-icons/ci";
@@ -15,21 +14,23 @@ export const services = [
 ];
 
 export function ServiceOptions() {
-  const {
-    filters: { services },
-    setFilters,
-  } = useContext(stationsContext);
+  const { params, setParams } = useContext(ParamsContext);
+  const { service } = params;
+
+  const handleSelectService = (value: string) =>
+    // TODO: adicionar tipagem
+    setParams((prev: any) => ({ ...prev, service: value }));
 
   const markSelectedService = (value: string) => {
-    if (services[0] === value) {
+    if (service === value) {
       return "primary";
     }
     return "default";
   };
 
   useEffect(() => {
-    setFilters((prev: filtersType) => ({ ...prev, services: ["wspd"] }));
-
+    // TODO: adicionar tipagem
+    setParams((prev: any) => ({ ...prev, service: "wspd" }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -40,12 +41,7 @@ export function ServiceOptions() {
       </span>
       <div className="flex gap-2">
         <Button
-          onClick={() => {
-            setFilters((prev: filtersType) => ({
-              ...prev,
-              services: ["wspd"],
-            }));
-          }}
+          onClick={() => handleSelectService("wspd")}
           isIconOnly
           color={markSelectedService("wspd")}
           aria-label="Velocidade do vento"
@@ -55,9 +51,7 @@ export function ServiceOptions() {
           <FaWind />
         </Button>
         <Button
-          onClick={() => {
-            setFilters((prev: filtersType) => ({ ...prev, services: ["t"] }));
-          }}
+          onClick={() => handleSelectService("t")}
           isIconOnly
           color={markSelectedService("t")}
           aria-label="Temperatura"
@@ -67,12 +61,7 @@ export function ServiceOptions() {
           <CiTempHigh />
         </Button>
         <Button
-          onClick={() => {
-            setFilters((prev: filtersType) => ({
-              ...prev,
-              services: ["prate"],
-            }));
-          }}
+          onClick={() => handleSelectService("prate")}
           isIconOnly
           color={markSelectedService("prate")}
           aria-label="Chuva"
@@ -82,9 +71,7 @@ export function ServiceOptions() {
           <IoRainyOutline />
         </Button>
         <Button
-          onClick={() => {
-            setFilters((prev: filtersType) => ({ ...prev, services: ["rh"] }));
-          }}
+          onClick={() => handleSelectService("rh")}
           isIconOnly
           color={markSelectedService("rh")}
           aria-label="Umidade"
