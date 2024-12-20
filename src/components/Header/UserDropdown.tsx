@@ -10,6 +10,7 @@ import { Button } from "@nextui-org/button";
 import { useCookies } from "next-client-cookies";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
+import { decodeJWT } from "@/utils/decodeJWT";
 
 export function UserDropdown() {
   const iconClasses =
@@ -22,19 +23,11 @@ export function UserDropdown() {
 
   useEffect(() => {
     async function getUserInfoAndStore() {
-      const decodedToken = await fetch(
-        "http://34.23.51.63:8000/api/erp/decode-token",
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({ token: token }),
-        }
-      ).then((response) => response.json());
+      if (token) {
+        const decodedToken = decodeJWT(token);
 
-      setUser(decodedToken);
+        setUser(decodedToken);
+      }
     }
 
     if (token) getUserInfoAndStore();

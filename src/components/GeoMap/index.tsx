@@ -32,7 +32,7 @@ export const GeoMap: React.FC = () => {
   useEffect(() => {
     async function handleAvailableCoordinates() {
       const availableCoordinatesData = await fetch(
-        `http://34.23.51.63:8000/api/erp/available-services?customer_id=${customerId}`
+        `/api/erp/available-services?customer_id=${customerId}`
       ).then((res) => res.ok && res.json());
 
       setAvailableCoordinates(availableCoordinatesData);

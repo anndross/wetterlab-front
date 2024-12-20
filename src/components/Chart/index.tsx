@@ -21,7 +21,7 @@ export const PlotlyChart = () => {
     function handleLoadForecast() {
       startTransition(async () => {
         const forecast = await fetch(
-          `http://34.23.51.63:8000/api/meteor/forecast?latitude=${lat}&longitude=${lon}&reftime=${refTime}&service=${service}&mean=${mean}`
+          `/api/meteor/forecast?latitude=${lat}&longitude=${lon}&reftime=${refTime}&service=${service}&mean=${mean}`
         ).then((data) => data.json());
 
         setForecast(forecast);

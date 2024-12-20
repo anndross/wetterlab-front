@@ -113,7 +113,7 @@ export default function Dashboard() {
 //       setLoading(true);
 
 //       const forecast = await fetch(
-//         `http://34.23.51.63:8000/api/meteor/forecast?longitude=${lon}&latitude=${lat}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
+//         `/api/meteor/forecast?longitude=${lon}&latitude=${lat}&service=${services[0]}&mean=${mean}&reftime=${refTime}`
 //       ).then((data) => data.json());
 //       console.log("forecast", forecast);
 

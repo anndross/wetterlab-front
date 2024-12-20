@@ -15,7 +15,7 @@ export function RefTimeOptions() {
   useEffect(() => {
     async function handleRefTimes() {
       const data = await fetch(
-        `http://34.23.51.63:8000/api/meteor/models-reftimes?longitude=${lon}&latitude=${lat}`
+        `/api/meteor/models-reftimes?longitude=${lon}&latitude=${lat}`
       ).then((res) => res.json());
 
       if (data.length) {
