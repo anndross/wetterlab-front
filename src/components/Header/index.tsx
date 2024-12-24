@@ -16,7 +16,7 @@ export function Header() {
 
   return (
     <>
-      <header className="bg-white w-full fixed top-0 z-20 flex flex-col">
+      <header className="bg-white shadow-md w-full fixed top-0 z-50 flex flex-col">
         <div className="w-full h-20 flex justify-between px-[5%] items-center">
           <Link className="md:hidden" href="/">
             <Image

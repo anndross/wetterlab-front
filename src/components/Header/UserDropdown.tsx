@@ -22,18 +22,12 @@ export function UserDropdown() {
   const token = cookies.get("token");
 
   useEffect(() => {
-    async function getUserInfoAndStore() {
-      if (token) {
-        const decodedToken = decodeJWT(token);
+    if (token) {
+      const decodedToken = decodeJWT(token);
 
-        setUser(decodedToken);
-      }
+      setUser(decodedToken);
     }
-
-    if (token) getUserInfoAndStore();
   }, [token]);
-
-  console.log(user);
 
   return (
     <Dropdown

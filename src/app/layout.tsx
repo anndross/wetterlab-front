@@ -21,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "pt-20")}>
+      <body
+        className={clsx(inter.className, "pt-20 flex flex-col justify-between")}
+      >
         <CookiesProvider>
           <NextUIProvider>
             <Header />

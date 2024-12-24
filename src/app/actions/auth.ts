@@ -18,8 +18,6 @@ export async function AuthAction(formData: FormData) {
     .then((response) => response.json())
     .then((data) => data);
 
-  console.log(token);
-
   const cookieStore = cookies();
 
   if (token.data) {

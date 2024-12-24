@@ -3,19 +3,35 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { Spinner } from "@nextui-org/spinner";
-import { Forecast } from "@/app/dashboard/context";
 import { preparePlotData } from "./utils/preparePlotData";
 import { handleStoreZoomInfo } from "./utils/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
 import ParamsContext from "@/app/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
-export const PlotlyChart = () => {
+export interface ForecastType {
+  dates: string[];
+  stations: {
+    x: string[];
+    y: number[];
+  }[];
+  models: {
+    x: string[];
+    y: number[];
+  }[];
+}
+
+interface PlotlyChartProps {
+  resize: boolean;
+}
+
+export const PlotlyChart = ({ resize }: PlotlyChartProps) => {
   const { params } = useContext(ParamsContext);
   const { lat, lon, refTime, service, mean } = params;
 
-  const [forecast, setForecast] = useState<Forecast>();
+  const [forecast, setForecast] = useState<ForecastType>();
   const [isPending, startTransition] = useTransition();
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -31,7 +47,15 @@ export const PlotlyChart = () => {
     if (lat && lon && refTime && service && mean) handleLoadForecast();
   }, [lat, lon, refTime, service, mean]);
 
-  if (isPending || !forecast?.stations || !forecast.models) {
+  useEffect(() => {
+    setIsResizing(true);
+
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+  }, [resize]);
+
+  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -147,10 +171,3 @@ export const PlotlyChart = () => {
     </div>
   );
 };
-
-// const servicesLabel: { [key: string]: string } = {
-//   wspd: "m/s",
-//   t: "ºC",
-//   prate: "mm",
-//   rh: "%",
-// };

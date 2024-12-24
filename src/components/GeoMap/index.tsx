@@ -1,12 +1,5 @@
 "use client";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  Circle,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, Circle } from "react-leaflet";
 import { Icon, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useContext, useEffect, useState } from "react";
@@ -19,17 +12,17 @@ export type LocationType = { latitude: number; longitude: number };
 export const GeoMap: React.FC = () => {
   const { params, setParams } = useContext(ParamsContext);
   const { lat, lon } = params;
-
   const cookies = useCookies();
-  const token = cookies.get("token");
-  const decodedToken = decodeJWT(token ?? "");
-  const customerId = decodedToken?.customer_id;
 
   const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>(
     []
   );
 
   useEffect(() => {
+    const token = cookies.get("token");
+    const decodedToken = decodeJWT(token ?? "");
+    const customerId = decodedToken?.customer_id;
+
     async function handleAvailableCoordinates() {
       const availableCoordinatesData = await fetch(
         `/api/erp/available-services?customer_id=${customerId}`
@@ -39,8 +32,7 @@ export const GeoMap: React.FC = () => {
 
       const [lat, lon] = availableCoordinatesData[0];
 
-      // TODO: adicionar tipagem
-      setParams((prev: any) => ({
+      setParams((prev) => ({
         ...prev,
         lat,
         lon,
@@ -50,33 +42,13 @@ export const GeoMap: React.FC = () => {
     if (customerId) handleAvailableCoordinates();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerId]);
-
-  const LocationFinderDummy = () => {
-    useMapEvents({
-      click(e) {
-        const { lat, lng } = e.latlng;
-
-        const latWithLessPrecision = Number(lat.toFixed(6));
-        const lonWithLessPrecision = Number(lng.toFixed(6));
-
-        // TODO: adicionar tipagem
-        setParams((prev: any) => ({
-          ...prev,
-          lat: latWithLessPrecision,
-          lon: lonWithLessPrecision,
-        }));
-      },
-    });
-    return null;
-  };
+  }, [cookies]);
 
   const center: LatLngExpression = [lat ?? -7.337, lon ?? -47.46];
 
   return (
     <div className="w-96 h-full">
       <MapContainer center={center} zoom={7} scrollWheelZoom={false}>
-        <LocationFinderDummy />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -85,12 +57,20 @@ export const GeoMap: React.FC = () => {
           availableCoordinates.map((location: number[]) => {
             return (
               <Circle
+                eventHandlers={{
+                  click: () =>
+                    setParams((prev) => ({
+                      ...prev,
+                      lat: location[0],
+                      lon: location[1],
+                    })),
+                }}
                 key={`${location}`}
                 weight={10}
                 color={"#f25e40"}
-                center={location.reverse() as LatLngExpression}
+                center={location as LatLngExpression}
                 radius={5}
-              ></Circle>
+              />
             );
           })}
 

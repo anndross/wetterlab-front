@@ -18,7 +18,6 @@ export function ServiceOptions() {
   const { service } = params;
 
   const handleSelectService = (value: string) =>
-    // TODO: adicionar tipagem
     setParams((prev: any) => ({ ...prev, service: value }));
 
   const markSelectedService = (value: string) => {
@@ -29,7 +28,6 @@ export function ServiceOptions() {
   };
 
   useEffect(() => {
-    // TODO: adicionar tipagem
     setParams((prev: any) => ({ ...prev, service: "wspd" }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
