@@ -16,7 +16,7 @@ export function RefTimeOptions() {
     function handleRefTimes() {
       startTransition(async () => {
         const data = await fetch(
-          `/api/meteor/models-reftimes?longitude=${lon}&latitude=${lat}`
+          `/api/meteor/models-ref-times?longitude=${lon}&latitude=${lat}`
         ).then((res) => res.json());
 
         if (data.length) {
@@ -50,7 +50,7 @@ export function RefTimeOptions() {
   return (
     <>
       <Downshift
-        id="reftimes"
+        id="ref-times"
         selectedItem={refTimes.find((time) => time.value === refTime)}
         initialSelectedItem={refTimes[0]}
         onChange={handleSelectionChange}

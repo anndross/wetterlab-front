@@ -21,13 +21,14 @@ export interface ForecastType {
   }[];
 }
 
-interface PlotlyChartProps {
+interface LineChartProps {
   resize: boolean;
 }
 
-export const PlotlyChart = ({ resize }: PlotlyChartProps) => {
-  const { params } = useContext(ParamsContext);
-  const { lat, lon, refTime, service, mean } = params;
+export const LineChart = ({ resize }: LineChartProps) => {
+  const {
+    params: { lat, lon, refTime, service, mean },
+  } = useContext(ParamsContext);
 
   const [forecast, setForecast] = useState<ForecastType>();
   const [isPending, startTransition] = useTransition();
@@ -37,7 +38,7 @@ export const PlotlyChart = ({ resize }: PlotlyChartProps) => {
     function handleLoadForecast() {
       startTransition(async () => {
         const forecast = await fetch(
-          `/api/meteor/forecast?latitude=${lat}&longitude=${lon}&reftime=${refTime}&service=${service}&mean=${mean}`
+          `/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
         ).then((data) => data.json());
 
         setForecast(forecast);

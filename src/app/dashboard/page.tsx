@@ -1,5 +1,5 @@
 "use client";
-import { PlotlyChart } from "@/components/Chart";
+import { LineChart } from "@/components/LineChart";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { ServiceOptions } from "@/components/ServiceOptions";
@@ -10,6 +10,7 @@ import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
 import dynamic from "next/dynamic";
+import { BoxPlotExample } from "@/components/BoxPlot";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
   {
@@ -65,7 +66,8 @@ export default function Dashboard() {
           })}
         >
           <div className="">
-            <PlotlyChart resize={resize} />
+            {/* <LineChart resize={resize} /> */}
+            <BoxPlotExample />
           </div>
           <div className="w-full h-full overflow-hidden">
             <GeoMapNoSSR />
