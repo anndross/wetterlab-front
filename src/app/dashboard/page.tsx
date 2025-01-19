@@ -10,7 +10,7 @@ import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
 import dynamic from "next/dynamic";
-import { BoxPlotExample } from "@/components/BoxPlot";
+import { BoxPlot } from "@/components/BoxPlot";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
   {
@@ -36,7 +36,7 @@ export default function Dashboard() {
         setParams,
       }}
     >
-      <main className={"w-full flex flex-col p-6 gap-4 bg-slate-50"}>
+      <main className={"w-full h-[200vh] flex flex-col p-6 gap-4 bg-slate-50"}>
         <section
           className={clsx({
             "w-full h-20 grid items-end duration-150 gap-3": true,
@@ -65,9 +65,9 @@ export default function Dashboard() {
             "grid-cols-[calc(95%-12px)_5%]": !resize,
           })}
         >
-          <div className="">
-            {/* <LineChart resize={resize} /> */}
-            <BoxPlotExample />
+          <div className="flex flex-col">
+            <LineChart resize={resize} />
+            <BoxPlot resize={resize} />
           </div>
           <div className="w-full h-full overflow-hidden">
             <GeoMapNoSSR />

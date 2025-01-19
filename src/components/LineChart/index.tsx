@@ -3,23 +3,23 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { Spinner } from "@nextui-org/spinner";
-import { preparePlotData } from "./utils/preparePlotData";
-import { handleStoreZoomInfo } from "./utils/handleStoreZoomInfo";
+import { createLineChartData } from "./helpers/createLineChartData";
+import { handleStoreZoomInfo } from "./helpers/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
 import ParamsContext from "@/app/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
-export interface ForecastType {
-  dates: string[];
-  stations: {
-    x: string[];
-    y: number[];
-  }[];
-  models: {
-    x: string[];
-    y: number[];
-  }[];
-}
+// export interface ForecastType {
+//   dates: string[];
+//   stations: {
+//     x: string[];
+//     y: number[];
+//   }[];
+//   models: {
+//     x: string[];
+//     y: number[];
+//   }[];
+// }
 
 interface LineChartProps {
   resize: boolean;
@@ -30,7 +30,7 @@ export const LineChart = ({ resize }: LineChartProps) => {
     params: { lat, lon, refTime, service, mean },
   } = useContext(ParamsContext);
 
-  const [forecast, setForecast] = useState<ForecastType>();
+  const [forecast, setForecast] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [isResizing, setIsResizing] = useState(false);
 
@@ -67,52 +67,8 @@ export const LineChart = ({ resize }: LineChartProps) => {
     );
   }
 
-  const plotData = [
-    ...preparePlotData(forecast.stations, [
-      {
-        type: "scatter",
-        mode: "lines+markers",
-        name: "Observados",
-        line: { color: "#1f77b4" },
-      },
-      {
-        type: "scatter",
-        mode: "none",
-        fill: "tonexty",
-        name: "Variação inferior",
-        fillcolor: "rgba(0, 150, 255, 0.2)",
-      },
-      {
-        type: "scatter",
-        mode: "none",
-        fill: "tonexty",
-        name: "Variação superior",
-        fillcolor: "rgba(0, 150, 255, 0.2)",
-      },
-    ]),
-    ...preparePlotData(forecast.models, [
-      {
-        type: "scatter",
-        mode: "lines+markers",
-        name: "Previsões",
-        line: { color: "#000" },
-      },
-      {
-        type: "scatter",
-        mode: "none",
-        fill: "tonexty",
-        name: "Variação inferior",
-        fillcolor: "rgba(255, 127, 14, 0.2)",
-      },
-      {
-        type: "scatter",
-        mode: "none",
-        fill: "tonexty",
-        name: "Variação superior",
-        fillcolor: "rgba(255, 127, 14, 0.2)",
-      },
-    ]),
-  ];
+  const plotData = createLineChartData(forecast.models, forecast.stations);
+  console.log("forecast", forecast);
 
   const mappedServices: { [key: string]: string } = mappedServicesJSON;
   const servicesLabel: { [key: string]: string } = {

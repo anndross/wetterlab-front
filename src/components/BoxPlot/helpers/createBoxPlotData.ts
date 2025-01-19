@@ -6,52 +6,51 @@ type BoxPlotDataType = {
   type: "box";
   name: string;
   boxpoints: "all";
+  marker: { color: string };
 };
-
 export function createBoxPlotData(
-  data1: DataType[] | undefined,
-  data2: DataType[] | undefined
-) {
-  if (!data1?.length || !data2?.length) return null;
+  models: DataType[] | undefined,
+  stations: DataType[] | undefined
+): BoxPlotDataType[] | null {
+  if (!models?.length || !stations?.length) return null;
 
-  let boxPlotData: BoxPlotDataType[] = [];
+  const modelsTrace: BoxPlotDataType = {
+    y: [],
+    x: [],
+    type: "box",
+    name: "Previsões",
+    boxpoints: "all",
+    marker: { color: "#1f77b4" },
+  };
 
-  for (let i = 0; i < data1.length; i++) {
-    const data1Instance: BoxPlotDataType = {
-      y: [],
-      x: [],
-      type: "box",
-      name: "Dataset 1", // Nome da primeira caixa
-      boxpoints: "all", // Mostrar todos os pontos
-    };
-    const data2Instance: BoxPlotDataType = {
-      y: [],
-      x: [],
-      type: "box",
-      name: "Dataset 2", // Nome da segunda caixa
-      boxpoints: "all", // Mostrar todos os pontos
-    };
+  const stationsTrace: BoxPlotDataType = {
+    y: [],
+    x: [],
+    type: "box",
+    name: "Observados",
+    boxpoints: "all",
+    marker: { color: "#000" },
+  };
 
-    const data1ByIndex = data1[i];
-    const data2ByIndex = data2[i];
+  for (let i = 0; i < models.length; i++) {
+    const modelsByIndex = models[i];
+    const stationsByIndex = stations[i];
 
-    const values1 = Object.values(data1ByIndex).filter(
+    const values1 = Object.values(modelsByIndex).filter(
       (e) => typeof e !== "string"
     );
-    const values2 = Object.values(data2ByIndex).filter(
+    const values2 = Object.values(stationsByIndex).filter(
       (e) => typeof e !== "string"
     );
 
-    const axisX = `${data1ByIndex.date},`.repeat(values1.length).split(",");
+    const axisX = `${modelsByIndex.date},`.repeat(values1.length).split(",");
 
-    data1Instance.y = values1;
-    data2Instance.y = values2;
+    modelsTrace.y = [...modelsTrace.y, ...values1];
+    stationsTrace.y = [...stationsTrace.y, ...values2];
 
-    data1Instance.x = axisX;
-    data2Instance.x = axisX;
-
-    boxPlotData.push(data1Instance, data2Instance);
+    modelsTrace.x = [...modelsTrace.x, ...axisX];
+    stationsTrace.x = [...stationsTrace.x, ...axisX];
   }
 
-  return boxPlotData;
+  return [modelsTrace, stationsTrace];
 }

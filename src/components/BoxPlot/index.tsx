@@ -3,6 +3,7 @@ import ParamsContext from "@/app/dashboard/context";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import Plot from "react-plotly.js";
 import { createBoxPlotData } from "./helpers/createBoxPlotData";
+import { Spinner } from "@nextui-org/spinner";
 
 export type DataType = {
   date: string;
@@ -19,12 +20,18 @@ export interface ForecastType {
   models: DataType[];
 }
 
-export const BoxPlotExample = () => {
+interface BoxPlotProps {
+  resize: boolean;
+}
+
+export const BoxPlot = ({ resize }: BoxPlotProps) => {
   const [forecast, setForecast] = useState<ForecastType>();
   const {
     params: { lat, lon, refTime, service, mean },
   } = useContext(ParamsContext);
+
   const [isPending, startTransition] = useTransition();
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -39,6 +46,25 @@ export const BoxPlotExample = () => {
 
     if (lat && lon && refTime && service) handleLoadForecast();
   }, [lat, lon, refTime, service]);
+
+  useEffect(() => {
+    setIsResizing(true);
+
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+  }, [resize]);
+
+  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
+    return (
+      <div className="w-full h-full bg-white rounded-3xl relative">
+        <Spinner
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          size="lg"
+        />
+      </div>
+    );
+  }
 
   const boxPlotData =
     createBoxPlotData(forecast?.models, forecast?.stations) || [];
@@ -56,6 +82,7 @@ export const BoxPlotExample = () => {
           title: "Valores",
         },
         boxmode: "group", // Agrupa as caixas por data
+        showlegend: true, // Exibir legendas
       }}
       config={{
         responsive: true, // Deixar o gráfico responsivo
