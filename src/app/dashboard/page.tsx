@@ -1,5 +1,4 @@
 "use client";
-import { LineChart } from "@/components/LineChart";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { ServiceOptions } from "@/components/ServiceOptions";
@@ -10,9 +9,23 @@ import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
 import dynamic from "next/dynamic";
+import { LineChart } from "@/components/LineChart";
 import { BoxPlot } from "@/components/BoxPlot";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
+  {
+    ssr: false,
+  }
+);
+
+const BoxPlotNoSSR = dynamic(
+  () => import("@/components/BoxPlot").then((module) => module.BoxPlot),
+  {
+    ssr: false,
+  }
+);
+const LineChartNoSSR = dynamic(
+  () => import("@/components/LineChart").then((module) => module.LineChart),
   {
     ssr: false,
   }
@@ -66,8 +79,8 @@ export default function Dashboard() {
           })}
         >
           <div className="flex flex-col">
-            <LineChart resize={resize} />
-            <BoxPlot resize={resize} />
+            <LineChartNoSSR resize={resize} />
+            <BoxPlotNoSSR resize={resize} />
           </div>
           <div className="w-full h-full overflow-hidden">
             <GeoMapNoSSR />
