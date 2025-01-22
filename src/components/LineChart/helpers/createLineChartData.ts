@@ -3,6 +3,7 @@ import { DataType } from "@/components/BoxPlot";
 type LineChartDataType = {
   x: string[] | [];
   y: number[] | [];
+  y0?: number[] | [];
   type?: "scatter";
   mode?: "lines+markers" | "none";
   name?: string;
@@ -51,10 +52,17 @@ export function createLineChartData(
   const modelsData = getAxisData(models);
   const stationsData = getAxisData(stations);
 
-  function generateLineChartData(
+  function generateLineChartDataWithY0(
     dates: string[],
     statistics: { [key: string]: number[] },
-    baseConfig: BaseConfigType[]
+    baseConfig: {
+      type: "scatter";
+      mode: "lines+markers" | "none";
+      name: string;
+      line?: { color: string };
+      fill?: "tonexty";
+      fillcolor?: string;
+    }[]
   ): LineChartDataType[] {
     return [
       // Linha central
@@ -67,79 +75,86 @@ export function createLineChartData(
       {
         x: dates,
         y: statistics.min,
-        fill: "tonexty",
-        fillcolor: baseConfig[0].fillcolor,
-        type: "scatter",
-        mode: "none",
-        name: `${baseConfig[0].name}: faixa min`,
-      },
-      {
-        x: dates,
-        y: statistics.p25,
+        y0: statistics.p25, // Referência para a área inferior
         fill: "tonexty",
         fillcolor: baseConfig[1].fillcolor,
         type: "scatter",
         mode: "none",
-        name: `${baseConfig[0].name}: faixa p25`,
+        name: "Faixa min-p25",
       },
       {
         x: dates,
-        y: statistics.p75,
+        y: statistics.p25,
+        y0: statistics.min, // Referência para a área inferior
         fill: "tonexty",
         fillcolor: baseConfig[2].fillcolor,
         type: "scatter",
         mode: "none",
-        name: `${baseConfig[0].name}: faixa p75`,
+        name: "Faixa min-p25",
       },
+      // Faixa entre p25 e p75
       {
         x: dates,
-        y: statistics.max,
+        y: statistics.p75,
+        y0: statistics.p25, // Referência para a área média
         fill: "tonexty",
         fillcolor: baseConfig[3].fillcolor,
         type: "scatter",
         mode: "none",
-        name: `${baseConfig[0].name}: faixa max`,
+        name: "Faixa p25-p75",
+      },
+      // Faixa entre p75 e max
+      {
+        x: dates,
+        y: statistics.max,
+        y0: statistics.p75, // Referência para a área superior
+        fill: "tonexty",
+        fillcolor: baseConfig[4].fillcolor,
+        type: "scatter",
+        mode: "none",
+        name: "Faixa p75-max",
       },
     ];
   }
 
-  const modelsBaseConfig: BaseConfigType[] = [
+  const modelsBaseConfig: any = [
     {
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões",
       line: { color: "#000" },
     },
-    { fillcolor: "rgba(255, 0, 0, 0.1)" }, // Vermelho claro e transparente
-    { fillcolor: "rgba(246, 93, 255, 0.11)" }, // Rosa claro e transparente
-    { fillcolor: "rgba(255, 165, 0, 0.15)" }, // Laranja transparente
-    { fillcolor: "rgba(255, 255, 0, 0.2)" }, // Amarelo transparente
+    { fillcolor: "#00000045" }, // Azul claro e transparente
+    { fillcolor: "#00000021" }, // Azul claro e transparente
+    { fillcolor: "#00000045" }, // Verde transparente
+    { fillcolor: "#00000021" }, // Ciano transparente
   ];
 
-  const stationsBaseConfig: BaseConfigType[] = [
+  const stationsBaseConfig: any = [
     {
       type: "scatter",
       mode: "lines+markers",
       name: "Observados",
-      line: { color: "#1f77b4" },
+      line: { color: "#1c84cd" },
     },
-    { fillcolor: "rgba(0, 0, 255, 0.1)" }, // Azul claro e transparente
-    { fillcolor: "rgba(79, 69, 131, 0.11)" }, // Roxo claro e transparente
-    { fillcolor: "rgba(0, 255, 0, 0.15)" }, // Verde transparente
-    { fillcolor: "rgba(0, 255, 255, 0.2)" }, // Ciano transparente
+    { fillcolor: "#1f77b43d" }, // Ciano transparente
+    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
+    { fillcolor: "#1f77b43d" }, // Verde transparente
+    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
   ];
 
-  const modelsLineChartData = generateLineChartData(
+  const modelsLineChartData = generateLineChartDataWithY0(
     modelsData.dates,
     modelsData.statistics,
     modelsBaseConfig
   );
 
-  const stationsLineChartData = generateLineChartData(
+  const stationsLineChartData = generateLineChartDataWithY0(
     stationsData.dates,
     stationsData.statistics,
     stationsBaseConfig
   );
+  console.log("stationsLineChartData", stationsLineChartData);
 
   return [...modelsLineChartData, ...stationsLineChartData];
 }

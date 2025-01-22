@@ -5,7 +5,6 @@ type BoxPlotDataType = {
   x: string[] | [];
   type: "box";
   name: string;
-  boxpoints: "all";
   marker: { color: string };
 };
 export function createBoxPlotData(
@@ -19,7 +18,6 @@ export function createBoxPlotData(
     x: [],
     type: "box",
     name: "Previsões",
-    boxpoints: "all",
     marker: { color: "#1f77b4" },
   };
 
@@ -28,7 +26,6 @@ export function createBoxPlotData(
     x: [],
     type: "box",
     name: "Observados",
-    boxpoints: "all",
     marker: { color: "#000" },
   };
 
