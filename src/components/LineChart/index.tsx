@@ -6,33 +6,16 @@ import { Spinner } from "@nextui-org/spinner";
 import { createLineChartData } from "./helpers/createLineChartData";
 import { handleStoreZoomInfo } from "./helpers/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
-import ParamsContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
-// export interface ForecastType {
-//   dates: string[];
-//   stations: {
-//     x: string[];
-//     y: number[];
-//   }[];
-//   models: {
-//     x: string[];
-//     y: number[];
-//   }[];
-// }
-
-interface LineChartProps {
-  resize: boolean;
-}
-
-export const LineChart = ({ resize }: LineChartProps) => {
+export const LineChart = () => {
   const {
     params: { lat, lon, refTime, service, mean },
-  } = useContext(ParamsContext);
+  } = useContext(DashboardContext);
 
   const [forecast, setForecast] = useState<any>();
   const [isPending, startTransition] = useTransition();
-  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -48,15 +31,7 @@ export const LineChart = ({ resize }: LineChartProps) => {
     if (lat && lon && refTime && service && mean) handleLoadForecast();
   }, [lat, lon, refTime, service, mean]);
 
-  useEffect(() => {
-    setIsResizing(true);
-
-    setTimeout(() => {
-      setIsResizing(false);
-    }, 200);
-  }, [resize]);
-
-  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
+  if (isPending || !forecast?.stations || !forecast.models) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -104,14 +79,8 @@ export const LineChart = ({ resize }: LineChartProps) => {
     <div className="w-full h-full bg-white rounded-3xl relative">
       <div className="absolute top-4 left-4 z-10 flex flex-col">
         <span className="text-xs font-semibold text-zinc-700">
-          Zoom X:{" "}
+          Período:{" "}
           <span className="font-normal" id="zoom-x">
-            não aplicado
-          </span>
-        </span>
-        <span className="text-xs font-semibold text-zinc-700">
-          Zoom Y:{" "}
-          <span className="font-normal" id="zoom-y">
             não aplicado
           </span>
         </span>

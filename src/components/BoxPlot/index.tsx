@@ -1,5 +1,5 @@
 "use client";
-import ParamsContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/dashboard/context";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import Plot from "react-plotly.js";
 import { createBoxPlotData } from "./helpers/createBoxPlotData";
@@ -20,18 +20,13 @@ export interface ForecastType {
   models: DataType[];
 }
 
-interface BoxPlotProps {
-  resize: boolean;
-}
-
-export const BoxPlot = ({ resize }: BoxPlotProps) => {
+export const BoxPlot = () => {
   const [forecast, setForecast] = useState<ForecastType>();
   const {
-    params: { lat, lon, refTime, service, mean },
-  } = useContext(ParamsContext);
+    params: { lat, lon, refTime, service },
+  } = useContext(DashboardContext);
 
   const [isPending, startTransition] = useTransition();
-  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -47,15 +42,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     if (lat && lon && refTime && service) handleLoadForecast();
   }, [lat, lon, refTime, service]);
 
-  useEffect(() => {
-    setIsResizing(true);
-
-    setTimeout(() => {
-      setIsResizing(false);
-    }, 200);
-  }, [resize]);
-
-  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
+  if (isPending || !forecast?.stations || !forecast.models) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner

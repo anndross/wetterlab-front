@@ -1,10 +1,10 @@
 "use client";
-import ParamsContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/dashboard/context";
 import { useContext, useEffect } from "react";
-import { Button } from "@nextui-org/button";
 import { CiDroplet, CiTempHigh } from "react-icons/ci";
 import { IoRainyOutline } from "react-icons/io5";
 import { FaWind } from "react-icons/fa";
+import { Button } from "../ui/button";
 
 export const services = [
   { value: "wspd", label: "Velocidade do Vento" },
@@ -14,7 +14,7 @@ export const services = [
 ];
 
 export function ServiceOptions() {
-  const { params, setParams } = useContext(ParamsContext);
+  const { params, setParams } = useContext(DashboardContext);
   const { service } = params;
 
   const handleSelectService = (value: string) =>
@@ -22,9 +22,9 @@ export function ServiceOptions() {
 
   const markSelectedService = (value: string) => {
     if (service === value) {
-      return "primary";
+      return "default";
     }
-    return "default";
+    return "outline";
   };
 
   useEffect(() => {
@@ -40,8 +40,7 @@ export function ServiceOptions() {
       <div className="flex gap-2">
         <Button
           onClick={() => handleSelectService("wspd")}
-          isIconOnly
-          color={markSelectedService("wspd")}
+          variant={markSelectedService("wspd")}
           aria-label="Velocidade do vento"
           title="Velocidade do vento"
           className="w-10"
@@ -50,8 +49,7 @@ export function ServiceOptions() {
         </Button>
         <Button
           onClick={() => handleSelectService("t")}
-          isIconOnly
-          color={markSelectedService("t")}
+          variant={markSelectedService("t")}
           aria-label="Temperatura"
           title="Temperatura"
           className="w-10"
@@ -60,8 +58,7 @@ export function ServiceOptions() {
         </Button>
         <Button
           onClick={() => handleSelectService("prate")}
-          isIconOnly
-          color={markSelectedService("prate")}
+          variant={markSelectedService("prate")}
           aria-label="Chuva"
           title="Chuva"
           className="w-10"
@@ -70,8 +67,7 @@ export function ServiceOptions() {
         </Button>
         <Button
           onClick={() => handleSelectService("rh")}
-          isIconOnly
-          color={markSelectedService("rh")}
+          variant={markSelectedService("rh")}
           aria-label="Umidade"
           title="Umidade"
           className="w-10"

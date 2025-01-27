@@ -1,9 +1,9 @@
-import { Button } from "@nextui-org/button";
 import { useContext, useEffect } from "react";
-import ParamsContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/dashboard/context";
+import { Button } from "../ui/button";
 
 export function MeanOptions() {
-  const { params, setParams } = useContext(ParamsContext);
+  const { params, setParams } = useContext(DashboardContext);
   const { mean } = params;
 
   useEffect(() => {
@@ -20,9 +20,9 @@ export function MeanOptions() {
       mean: value,
     }));
   const markSelectedOption = (value: number) => {
-    if (mean == value) return "primary";
+    if (mean == value) return "default";
 
-    return "default";
+    return "outline";
   };
 
   return (
@@ -34,34 +34,34 @@ export function MeanOptions() {
         <Button
           className="min-w-10 w-10"
           onClick={() => handleSelectPeriod(1)}
-          color={markSelectedOption(1)}
+          variant={markSelectedOption(1)}
           title="Média de 1 dia"
         >
-          1
+          1d
         </Button>
         <Button
           className="min-w-10 w-10"
           onClick={() => handleSelectPeriod(7)}
-          color={markSelectedOption(7)}
+          variant={markSelectedOption(7)}
           title="Média de 7 dias"
         >
-          7
+          7d
         </Button>
         <Button
           className="min-w-10 w-10"
           onClick={() => handleSelectPeriod(15)}
-          color={markSelectedOption(15)}
+          variant={markSelectedOption(15)}
           title="Média de 15 dias"
         >
-          15
+          15d
         </Button>
         <Button
           className="min-w-10 w-10"
           onClick={() => handleSelectPeriod(30)}
-          color={markSelectedOption(30)}
+          variant={markSelectedOption(30)}
           title="Média de 30 dias"
         >
-          30
+          30d
         </Button>
       </div>
     </div>

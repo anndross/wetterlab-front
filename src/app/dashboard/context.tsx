@@ -1,9 +1,15 @@
 import { createContext, Dispatch, SetStateAction } from "react";
-export interface ParamsType {
+export interface DashboardType {
   params: {
     lat: number | null;
     lon: number | null;
     refTime: string;
+    /**
+     * @alias 1: 1 dia
+     * @alias 7: 7 dias
+     * @alias 15: 15 dias
+     * @alias 30: 30 dias
+     */
     mean: 1 | 7 | 15 | 30;
     /**
      * @alias wspd: velocidade do vento
@@ -12,19 +18,21 @@ export interface ParamsType {
      * @alias prate: chuva
      */
     service: "wspd" | "t" | "rh" | "prate";
+    chart: "LineChart" | "BoxPlot";
   };
-  setParams: Dispatch<SetStateAction<ParamsType["params"]>>;
+  setParams: Dispatch<SetStateAction<DashboardType["params"]>>;
 }
 
-const ParamsContext = createContext<ParamsType>({
+const DashboardContext = createContext<DashboardType>({
   params: {
     lat: null,
     lon: null,
     refTime: "",
     mean: 1,
     service: "wspd",
+    chart: "LineChart",
   },
   setParams: () => {},
 });
 
-export default ParamsContext;
+export default DashboardContext;
