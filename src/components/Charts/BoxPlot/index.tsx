@@ -4,6 +4,8 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import Plot from "react-plotly.js";
 import { createBoxPlotData } from "./helpers/createBoxPlotData";
 import { Spinner } from "@nextui-org/spinner";
+import dayjs from "dayjs";
+import mappedServicesJSON from "@/data/mappedServices.json";
 
 export type DataType = {
   date: string;
@@ -20,11 +22,22 @@ export interface ForecastType {
   models: DataType[];
 }
 
-export const BoxPlot = () => {
+interface BoxPlotProps {
+  resize?: boolean;
+}
+
+export const BoxPlot = ({ resize }: BoxPlotProps) => {
   const [forecast, setForecast] = useState<ForecastType>();
+  const [isResizing, setIsResizing] = useState(false);
   const {
-    params: { lat, lon, refTime, service },
+    params: {
+      location: { coordinate },
+      refTime,
+      service,
+    },
   } = useContext(DashboardContext);
+
+  const [lat, lon] = coordinate;
 
   const [isPending, startTransition] = useTransition();
 
@@ -42,7 +55,14 @@ export const BoxPlot = () => {
     if (lat && lon && refTime && service) handleLoadForecast();
   }, [lat, lon, refTime, service]);
 
-  if (isPending || !forecast?.stations || !forecast.models) {
+  useEffect(() => {
+    setIsResizing(true);
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+  }, [resize]);
+
+  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -53,26 +73,52 @@ export const BoxPlot = () => {
     );
   }
 
-  const boxPlotData =
-    createBoxPlotData(forecast?.models, forecast?.stations) || [];
+  const mappedServices: { [key: string]: string } = mappedServicesJSON;
+  const servicesLabel: { [key: string]: string } = {
+    wspd: "m/s",
+    t: "ºC",
+    prate: "mm",
+    rh: "%",
+  };
+
+  const { data, dates } = createBoxPlotData(
+    forecast?.models,
+    forecast?.stations
+  ) || { data: [], dates: [] };
+
+  const formattedDates = dates.map((date) => dayjs(date).format("MM/YYYY"));
 
   return (
     <Plot
-      data={boxPlotData}
+      data={data}
       layout={{
         title: "Box Plot com Datas no Eixo X",
         xaxis: {
           title: "Datas",
           type: "category", // Configurar eixo X como categórico para lidar com agrupamento
+          tickformat: "%d/%m/%Y", // Exemplo: 15/01/2024
+          tickvals: dates, // Os valores reais no eixo
+          ticktext: formattedDates,
         },
         yaxis: {
-          title: "Valores",
+          title: servicesLabel[service],
         },
         boxmode: "group", // Agrupa as caixas por data
         showlegend: true, // Exibir legendas
       }}
       config={{
         responsive: true, // Deixar o gráfico responsivo
+        modeBarButtonsToRemove: [
+          "zoom2d",
+          "pan2d",
+          "select2d",
+          "lasso2d",
+          "zoomIn2d",
+          "zoomOut2d",
+          "autoScale2d",
+          "hoverClosestCartesian",
+          "hoverCompareCartesian",
+        ],
       }}
       style={{ width: "100%", height: "100%" }}
     />

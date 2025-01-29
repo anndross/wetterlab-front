@@ -1,8 +1,11 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 export interface DashboardType {
   params: {
-    lat: number | null;
-    lon: number | null;
+    location: {
+      coordinate: number[] | null[];
+      state?: string;
+      city?: string;
+    };
     refTime: string;
     /**
      * @alias 1: 1 dia
@@ -25,8 +28,9 @@ export interface DashboardType {
 
 const DashboardContext = createContext<DashboardType>({
   params: {
-    lat: null,
-    lon: null,
+    location: {
+      coordinate: [null, null],
+    },
     refTime: "",
     mean: 1,
     service: "wspd",

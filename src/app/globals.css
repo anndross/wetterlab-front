@@ -88,9 +88,7 @@ header {
 /* Plotly.js chart tooltip */
 .js-plotly-plot .plotly [data-title]::before,
 .js-plotly-plot .plotly [data-title]::after {
-  top: 195% !important;
-  right: unset !important;
-  left: 50%;
+  top: 100% !important;
 }
 
 ::-webkit-scrollbar {

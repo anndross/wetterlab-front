@@ -1,4 +1,4 @@
-import { DataType } from "@/components/BoxPlot";
+import { DataType } from "@/components/Charts/BoxPlot";
 
 type LineChartDataType = {
   x: string[] | [];

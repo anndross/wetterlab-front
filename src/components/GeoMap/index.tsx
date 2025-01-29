@@ -21,8 +21,12 @@ import { FaCopy } from "react-icons/fa";
 
 export function GeoMap() {
   const { params, setParams } = useContext(DashboardContext);
-  const { lat, lon } = params;
+  const {
+    location: { coordinate },
+  } = params;
   const cookies = useCookies();
+
+  const [lat, lon] = coordinate;
 
   const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>(
     []
@@ -44,8 +48,10 @@ export function GeoMap() {
 
       setParams((prev) => ({
         ...prev,
-        lat,
-        lon,
+        location: {
+          ...prev.location,
+          coordinate: [lat, lon],
+        },
       }));
     }
 
@@ -54,62 +60,74 @@ export function GeoMap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cookies]);
 
+  useEffect(() => {
+    async function getCoorinateInfo() {
+      const coordinateInfo = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+      ).then((res) => res.json());
+
+      setParams((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          state: coordinateInfo?.address?.state || "",
+          city:
+            coordinateInfo?.address?.city ||
+            coordinateInfo?.address?.city_district ||
+            "",
+        },
+      }));
+    }
+    if (lat && lon) getCoorinateInfo();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lon]);
+
   const center: LatLngExpression = [lat ?? -7.337, lon ?? -47.46];
   return (
-    <Dialog>
-      <div className="flex flex-col justify-end gap-2">
-        <span className="block subpixel-antialiased text-small group-data-[required=true]:after:content-['*'] group-data-[required=true]:after:text-danger group-data-[required=true]:after:ml-0.5 group-data-[invalid=true]:text-danger w-full text-foreground">
-          Coordenada
-        </span>
-        <DialogTrigger asChild>
-          <Button variant="outline">{center.join(", ")}</Button>
-        </DialogTrigger>
-      </div>
+    <div className="w-96 h-full">
+      <MapContainer center={center} zoom={7} scrollWheelZoom={false}>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {availableCoordinates.length &&
+          availableCoordinates.map((location: number[]) => {
+            const isSelectedLocation = location[0] == lat && location[1] == lon;
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Mapa</DialogTitle>
-          <DialogDescription>Selecione a coordenada</DialogDescription>
-        </DialogHeader>
-        <MapContainer center={center} zoom={7} scrollWheelZoom={false}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {availableCoordinates.length &&
-            availableCoordinates.map((location: number[]) => {
-              return (
-                <Circle
-                  eventHandlers={{
-                    click: () =>
-                      setParams((prev) => ({
-                        ...prev,
-                        lat: location[0],
-                        lon: location[1],
-                      })),
-                  }}
-                  key={`${location}`}
-                  weight={10}
-                  color={"#f25e40"}
-                  center={location as LatLngExpression}
-                  radius={5}
-                />
-              );
-            })}
+            return (
+              <Circle
+                eventHandlers={{
+                  click: () =>
+                    setParams((prev) => ({
+                      ...prev,
+                      location: {
+                        ...prev.location,
+                        coordinate: [location[0], location[1]],
+                      },
+                    })),
+                }}
+                key={`${location}-${lat}-${lon}`}
+                weight={10}
+                color={isSelectedLocation ? "#f25e40" : "#86807e"}
+                center={location as LatLngExpression}
+                radius={5}
+              />
+            );
+          })}
 
-          <Marker
-            position={center}
-            icon={
-              new Icon({
-                iconUrl: "/assets/marker.png",
-                iconSize: [30, 30],
-              })
-            }
-          >
-            <Popup>{center.join(", ")}</Popup>
-          </Marker>
-        </MapContainer>
-      </DialogContent>
-    </Dialog>
+        <Marker
+          position={center}
+          icon={
+            new Icon({
+              iconUrl: "/assets/marker.png",
+              iconSize: [30, 30],
+            })
+          }
+        >
+          <Popup>{center.join(", ")}</Popup>
+        </Marker>
+      </MapContainer>
+    </div>
   );
 }

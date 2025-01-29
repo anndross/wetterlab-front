@@ -8,10 +8,8 @@ import { MeanOptions } from "@/components/MeanOptions";
 import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
-import dynamic from "next/dynamic";
-import { LineChart } from "@/components/LineChart";
-import { BoxPlot } from "@/components/BoxPlot";
 import { SelectChart } from "@/components/SelectChart";
+import dynamic from "next/dynamic";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
   {
@@ -20,13 +18,14 @@ const GeoMapNoSSR = dynamic(
 );
 
 const BoxPlotNoSSR = dynamic(
-  () => import("@/components/BoxPlot").then((module) => module.BoxPlot),
+  () => import("@/components/Charts/BoxPlot").then((module) => module.BoxPlot),
   {
     ssr: false,
   }
 );
 const LineChartNoSSR = dynamic(
-  () => import("@/components/LineChart").then((module) => module.LineChart),
+  () =>
+    import("@/components/Charts/LineChart").then((module) => module.LineChart),
   {
     ssr: false,
   }
@@ -37,9 +36,14 @@ type ChartType = {
 };
 
 export default function Dashboard() {
+  const [resize, setResize] = useState(false);
+
   const [params, setParams] = useState<DashboardType["params"]>({
-    lat: null,
-    lon: null,
+    location: {
+      coordinate: [null, null],
+      state: "",
+      city: "",
+    },
     refTime: "",
     mean: 1,
     service: "wspd",
@@ -47,8 +51,8 @@ export default function Dashboard() {
   });
 
   const chart: ChartType = {
-    LineChart: <LineChartNoSSR />,
-    BoxPlot: <BoxPlotNoSSR />,
+    LineChart: <LineChartNoSSR resize={resize} />,
+    BoxPlot: <BoxPlotNoSSR resize={resize} />,
   };
 
   return (
@@ -62,23 +66,36 @@ export default function Dashboard() {
         <section
           className={clsx({
             "w-full h-20 grid items-end duration-150 gap-3": true,
+            "grid-cols-[calc(100%-396px)_384px]": resize,
+            "grid-cols-[calc(95%-12px)_5%]": !resize,
           })}
         >
           <div className="flex gap-5 h-full">
             <SelectChart />
             <RefTimeOptions />
             <ServiceOptions />
-            <MeanOptions />
-            <GeoMapNoSSR />
+            {params.chart === "LineChart" && <MeanOptions />}
           </div>
+
+          <Button
+            className="w-full min-w-full"
+            onClick={() => setResize((prev) => !prev)}
+          >
+            {resize ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
+          </Button>
         </section>
 
         <section
           className={clsx({
             "w-full h-full overflow-hidden grid duration-150 gap-3": true,
+            "grid-cols-[calc(100%-396px)_384px]": resize,
+            "grid-cols-[calc(95%-12px)_5%]": !resize,
           })}
         >
           <div className="flex flex-col">{chart[params.chart]}</div>
+          <div className="w-full h-full overflow-hidden">
+            <GeoMapNoSSR />
+          </div>
         </section>
       </main>
     </DashboardContext.Provider>

@@ -1,16 +1,23 @@
+import dayjs from "dayjs";
 import { DataType } from "..";
 
-type BoxPlotDataType = {
+export type BoxPlotDataType = {
   y: number[] | [];
   x: string[] | [];
   type: "box";
   name: string;
   marker: { color: string };
 };
+
+export interface BoxPlotDataResponseType {
+  data: BoxPlotDataType[];
+  dates: Date[] | string[];
+}
+
 export function createBoxPlotData(
   models: DataType[] | undefined,
   stations: DataType[] | undefined
-): BoxPlotDataType[] | null {
+): BoxPlotDataResponseType | null {
   if (!models?.length || !stations?.length) return null;
 
   const modelsTrace: BoxPlotDataType = {
@@ -40,7 +47,12 @@ export function createBoxPlotData(
       (e) => typeof e !== "string"
     );
 
-    const axisX = `${modelsByIndex.date},`.repeat(values1.length).split(",");
+    const axisX = `${modelsByIndex.date},`
+      .repeat(values1.length)
+      .split(",")
+      .filter((date) => {
+        return !!new Date(date).getDate();
+      });
 
     modelsTrace.y = [...modelsTrace.y, ...values1];
     stationsTrace.y = [...stationsTrace.y, ...values2];
@@ -49,5 +61,5 @@ export function createBoxPlotData(
     stationsTrace.x = [...stationsTrace.x, ...axisX];
   }
 
-  return [modelsTrace, stationsTrace];
+  return { data: [modelsTrace, stationsTrace], dates: modelsTrace.x };
 }

@@ -1,8 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState, useTransition } from "react";
-import Downshift from "downshift";
 import DashboardContext from "@/app/dashboard/context";
-import clsx from "clsx";
 import { Select } from "../ui/Select";
 
 export function RefTimeOptions() {
@@ -11,7 +9,12 @@ export function RefTimeOptions() {
   const { params, setParams } = useContext(DashboardContext);
   const [isPending, startTransition] = useTransition();
 
-  const { lat, lon, refTime } = params;
+  const {
+    location: { coordinate },
+    refTime,
+  } = params;
+
+  const [lat, lon] = coordinate;
 
   useEffect(() => {
     function handleRefTimes() {

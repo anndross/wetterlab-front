@@ -9,13 +9,25 @@ import { Config, Layout } from "plotly.js";
 import DashboardContext from "@/app/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
-export const LineChart = () => {
+interface LineChartProps {
+  resize?: boolean;
+}
+
+export const LineChart = ({ resize }: LineChartProps) => {
   const {
-    params: { lat, lon, refTime, service, mean },
+    params: {
+      location: { coordinate, state, city },
+      refTime,
+      service,
+      mean,
+    },
   } = useContext(DashboardContext);
+
+  const [lat, lon] = coordinate;
 
   const [forecast, setForecast] = useState<any>();
   const [isPending, startTransition] = useTransition();
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     function handleLoadForecast() {
@@ -31,7 +43,14 @@ export const LineChart = () => {
     if (lat && lon && refTime && service && mean) handleLoadForecast();
   }, [lat, lon, refTime, service, mean]);
 
-  if (isPending || !forecast?.stations || !forecast.models) {
+  useEffect(() => {
+    setIsResizing(true);
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+  }, [resize]);
+
+  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -54,8 +73,13 @@ export const LineChart = () => {
   };
 
   const layout: Partial<Layout> = {
-    title: mappedServices[service],
-    xaxis: { title: "Data", fixedrange: false },
+    title: `${mappedServices[service]} - ${state}, ${city}`,
+    xaxis: {
+      title: "Data",
+      type: "date", // Garante que o eixo X reconhece os valores como datas
+      tickformat: "%d/%m/%Y", // Exemplo: 15/01/2024
+      fixedrange: false,
+    },
     yaxis: { title: servicesLabel[service], fixedrange: false },
     showlegend: true,
     legend: {
@@ -69,6 +93,17 @@ export const LineChart = () => {
 
   const config: Partial<Config> = {
     responsive: true,
+    modeBarButtonsToRemove: [
+      "zoom2d",
+      "pan2d",
+      "select2d",
+      "lasso2d",
+      "zoomIn2d",
+      "zoomOut2d",
+      "autoScale2d",
+      "hoverClosestCartesian",
+      "hoverCompareCartesian",
+    ],
     displayModeBar: true,
     locale: "pt-BR",
     displaylogo: false,
