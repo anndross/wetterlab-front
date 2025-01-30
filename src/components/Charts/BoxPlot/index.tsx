@@ -31,7 +31,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
   const [isResizing, setIsResizing] = useState(false);
   const {
     params: {
-      location: { coordinate },
+      location: { coordinate, state, city },
       refTime,
       service,
     },
@@ -92,7 +92,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     <Plot
       data={data}
       layout={{
-        title: "Box Plot com Datas no Eixo X",
+        title: `${mappedServices[service]} - ${state}, ${city}`,
         xaxis: {
           title: "Datas",
           type: "category", // Configurar eixo X como categórico para lidar com agrupamento
