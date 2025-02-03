@@ -25,7 +25,7 @@ export function createBoxPlotData(
     x: [],
     type: "box",
     name: "Previsões",
-    marker: { color: "#000" },
+    marker: { color: "#1f77b4" },
   };
 
   const stationsTrace: BoxPlotDataType = {
@@ -33,7 +33,7 @@ export function createBoxPlotData(
     x: [],
     type: "box",
     name: "Observados",
-    marker: { color: "#1f77b4" },
+    marker: { color: "#000" },
   };
 
   for (let i = 0; i < models.length; i++) {

@@ -122,12 +122,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões",
-      line: { color: "#000" },
+      line: { color: "#1c84cd" },
     },
-    { fillcolor: "#00000045" }, // Azul claro e transparente
-    { fillcolor: "#00000021" }, // Azul claro e transparente
-    { fillcolor: "#00000045" }, // Verde transparente
-    { fillcolor: "#00000021" }, // Ciano transparente
+    { fillcolor: "#1f77b43d" }, // Ciano transparente
+    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
+    { fillcolor: "#1f77b43d" }, // Verde transparente
+    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
   ];
 
   const stationsBaseConfig: any = [
@@ -135,12 +135,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Observados",
-      line: { color: "#1c84cd" },
+      line: { color: "#000" },
     },
-    { fillcolor: "#1f77b43d" }, // Ciano transparente
-    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
-    { fillcolor: "#1f77b43d" }, // Verde transparente
-    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
+    { fillcolor: "#00000045" }, // Azul claro e transparente
+    { fillcolor: "#00000021" }, // Azul claro e transparente
+    { fillcolor: "#00000045" }, // Verde transparente
+    { fillcolor: "#00000021" }, // Ciano transparente
   ];
 
   const modelsLineChartData = generateLineChartDataWithY0(
