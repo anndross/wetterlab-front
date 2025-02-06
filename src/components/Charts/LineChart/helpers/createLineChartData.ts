@@ -23,7 +23,8 @@ type BaseConfigType = {
 
 export function createLineChartData(
   models: DataType[] | undefined,
-  stations: DataType[] | undefined
+  stations: DataType[] | undefined,
+  modelsEnsemble: DataType[] | undefined
 ) {
   function getAxisData(data: DataType[] | undefined) {
     if (!data?.length) return { dates: [], statistics: {} };
@@ -51,6 +52,7 @@ export function createLineChartData(
 
   const modelsData = getAxisData(models);
   const stationsData = getAxisData(stations);
+  const modelsEnsembleData = getAxisData(modelsEnsemble);
 
   function generateLineChartDataWithY0(
     dates: string[],
@@ -64,57 +66,73 @@ export function createLineChartData(
       fillcolor?: string;
     }[]
   ): LineChartDataType[] {
-    return [
-      // Linha central
-      {
-        x: dates,
-        y: statistics.median,
-        ...baseConfig[0],
-      },
-      // Faixa entre min e p25
-      {
-        x: dates,
-        y: statistics.min,
-        y0: statistics.p25, // Referência para a área inferior
-        fill: "tonexty",
-        fillcolor: baseConfig[1].fillcolor,
-        type: "scatter",
-        mode: "none",
-        name: "Faixa min-p25",
-      },
-      {
-        x: dates,
-        y: statistics.p25,
-        y0: statistics.min, // Referência para a área inferior
-        fill: "tonexty",
-        fillcolor: baseConfig[2].fillcolor,
-        type: "scatter",
-        mode: "none",
-        name: "Faixa min-p25",
-      },
-      // Faixa entre p25 e p75
-      {
-        x: dates,
-        y: statistics.p75,
-        y0: statistics.p25, // Referência para a área média
-        fill: "tonexty",
-        fillcolor: baseConfig[3].fillcolor,
-        type: "scatter",
-        mode: "none",
-        name: "Faixa p25-p75",
-      },
-      // Faixa entre p75 e max
-      {
-        x: dates,
-        y: statistics.max,
-        y0: statistics.p75, // Referência para a área superior
-        fill: "tonexty",
-        fillcolor: baseConfig[4].fillcolor,
-        type: "scatter",
-        mode: "none",
-        name: "Faixa p75-max",
-      },
-    ];
+    if (
+      statistics?.min &&
+      statistics?.p25 &&
+      statistics?.median &&
+      statistics?.p75 &&
+      statistics?.max
+    ) {
+      return [
+        // Linha central (mediana)
+        {
+          x: dates,
+          y: statistics.median,
+          ...baseConfig[0],
+        },
+        {
+          x: dates,
+          y: statistics.min,
+          y0: statistics.p25, // Define a base da área preenchida
+          fill: "tonexty",
+          fillcolor: baseConfig[2].fillcolor,
+          type: "scatter",
+          mode: "none",
+          name: "Faixa min-p25",
+        },
+        // Faixa entre p25 e p75 (IQR - intervalo interquartil)
+        {
+          x: dates,
+          y: statistics.p75,
+          y0: statistics.median, // Define a base da área preenchida
+          fill: "tonexty",
+          fillcolor: baseConfig[1].fillcolor,
+          type: "scatter",
+          mode: "none",
+          name: "Faixa p25-p75",
+        },
+        // Faixa entre min e p25
+        {
+          x: dates,
+          y: statistics.p25,
+          y0: statistics.median, // Define a base da área preenchida
+          fill: "tonexty",
+          fillcolor: baseConfig[2].fillcolor,
+          type: "scatter",
+          mode: "none",
+          name: "Faixa min-p25",
+        },
+        // Faixa entre p75 e max
+        {
+          x: dates,
+          y: statistics.max,
+          y0: statistics.p75, // Define a base da área preenchida
+          fill: "tonexty",
+          fillcolor: baseConfig[3].fillcolor,
+          type: "scatter",
+          mode: "none",
+          name: "Faixa p75-max",
+        },
+      ];
+    } else {
+      return [
+        {
+          x: dates,
+          y: statistics.median,
+          ...baseConfig[0],
+        },
+      ];
+    }
   }
 
   const modelsBaseConfig: any = [
@@ -122,12 +140,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões",
-      line: { color: "#1c84cd" },
+      line: { color: "#dd6800" },
     },
-    { fillcolor: "#1f77b43d" }, // Ciano transparente
-    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
-    { fillcolor: "#1f77b43d" }, // Verde transparente
-    { fillcolor: "#1f77b41c" }, // Azul claro e transparente
+    { fillcolor: "#dd680029" }, // Ciano transparente
+    { fillcolor: "#dd68004a" }, // Azul claro e transparente
+    { fillcolor: "#dd680029" }, // Verde transparente
+    { fillcolor: "#dd68004a" }, // Azul claro e transparente
   ];
 
   const stationsBaseConfig: any = [
@@ -135,12 +153,25 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Observados",
-      line: { color: "#000" },
+      line: { color: "#000", dash: "dash" },
     },
     { fillcolor: "#00000045" }, // Azul claro e transparente
     { fillcolor: "#00000021" }, // Azul claro e transparente
     { fillcolor: "#00000045" }, // Verde transparente
     { fillcolor: "#00000021" }, // Ciano transparente
+  ];
+
+  const modelsEnsembleBaseConfig: any = [
+    {
+      type: "scatter",
+      mode: "lines+markers",
+      name: "Previsões Ensemble",
+      line: { color: "#232323" },
+    },
+    { fillcolor: "#00000021" }, // Azul claro e transparente
+    { fillcolor: "#00000014" }, // Azul claro e transparente
+    { fillcolor: "#00000021" }, // Verde transparente
+    { fillcolor: "#00000014" }, // Ciano transparente
   ];
 
   const modelsLineChartData = generateLineChartDataWithY0(
@@ -154,7 +185,17 @@ export function createLineChartData(
     stationsData.statistics,
     stationsBaseConfig
   );
-  console.log("stationsLineChartData", stationsLineChartData);
 
-  return [...modelsLineChartData, ...stationsLineChartData];
+  const modelsEnsembleLineChartData = generateLineChartDataWithY0(
+    modelsEnsembleData.dates,
+    modelsEnsembleData.statistics,
+    modelsEnsembleBaseConfig
+  );
+  console.log("stationsLineChartData", modelsEnsembleLineChartData);
+
+  return [
+    ...modelsLineChartData,
+    ...stationsLineChartData,
+    ...modelsEnsembleLineChartData,
+  ];
 }

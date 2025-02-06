@@ -61,7 +61,11 @@ export const LineChart = ({ resize }: LineChartProps) => {
     );
   }
 
-  const plotData = createLineChartData(forecast.models, forecast.stations);
+  const plotData = createLineChartData(
+    forecast.models,
+    forecast.stations,
+    forecast.models_ensemble
+  );
   console.log("forecast", forecast);
 
   const mappedServices: { [key: string]: string } = mappedServicesJSON;
