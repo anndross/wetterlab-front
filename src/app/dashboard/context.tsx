@@ -24,6 +24,10 @@ export interface DashboardType {
     chart: "LineChart" | "BoxPlot";
   };
   setParams: Dispatch<SetStateAction<DashboardType["params"]>>;
+  toggleStatistics: boolean;
+  setToggleStatistics: Dispatch<
+    SetStateAction<DashboardType["toggleStatistics"]>
+  >;
 }
 
 const DashboardContext = createContext<DashboardType>({
@@ -37,6 +41,8 @@ const DashboardContext = createContext<DashboardType>({
     chart: "LineChart",
   },
   setParams: () => {},
+  toggleStatistics: false,
+  setToggleStatistics: () => {},
 });
 
 export default DashboardContext;

@@ -24,7 +24,8 @@ type BaseConfigType = {
 export function createLineChartData(
   models: DataType[] | undefined,
   stations: DataType[] | undefined,
-  modelsEnsemble: DataType[] | undefined
+  modelsEnsemble: DataType[] | undefined,
+  disableStatistics: boolean
 ) {
   function getAxisData(data: DataType[] | undefined) {
     if (!data?.length) return { dates: [], statistics: {} };
@@ -71,7 +72,8 @@ export function createLineChartData(
       statistics?.p25 &&
       statistics?.median &&
       statistics?.p75 &&
-      statistics?.max
+      statistics?.max &&
+      !disableStatistics
     ) {
       return [
         // Linha central (mediana)
@@ -166,7 +168,7 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões Ensemble",
-      line: { color: "#232323" },
+      line: { color: "#5f5f5f" },
     },
     { fillcolor: "#00000021" }, // Azul claro e transparente
     { fillcolor: "#00000014" }, // Azul claro e transparente

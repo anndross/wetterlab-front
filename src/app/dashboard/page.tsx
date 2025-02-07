@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
 import { SelectChart } from "@/components/SelectChart";
 import dynamic from "next/dynamic";
+import { ToggleStatistics } from "@/components/ToggleStatistics";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
   {
@@ -37,6 +38,7 @@ type ChartType = {
 
 export default function Dashboard() {
   const [resize, setResize] = useState(false);
+  const [toggleStatistics, setToggleStatistics] = useState(false);
 
   const [params, setParams] = useState<DashboardType["params"]>({
     location: {
@@ -60,6 +62,8 @@ export default function Dashboard() {
       value={{
         params,
         setParams,
+        toggleStatistics,
+        setToggleStatistics,
       }}
     >
       <main className={"w-full h-screen flex flex-col p-6 gap-4 bg-slate-50"}>
@@ -75,6 +79,7 @@ export default function Dashboard() {
             <RefTimeOptions />
             <ServiceOptions />
             {params.chart === "LineChart" && <MeanOptions />}
+            <ToggleStatistics />
           </div>
 
           <Button

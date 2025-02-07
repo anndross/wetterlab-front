@@ -21,11 +21,13 @@ export const LineChart = ({ resize }: LineChartProps) => {
       service,
       mean,
     },
+    toggleStatistics,
   } = useContext(DashboardContext);
 
   const [lat, lon] = coordinate;
 
   const [forecast, setForecast] = useState<any>();
+  const [plotData, setPlotData] = useState<any>();
   const [isPending, startTransition] = useTransition();
   const [isResizing, setIsResizing] = useState(false);
 
@@ -50,6 +52,19 @@ export const LineChart = ({ resize }: LineChartProps) => {
     }, 200);
   }, [resize]);
 
+  useEffect(() => {
+    if (forecast?.models?.length) {
+      const data = createLineChartData(
+        forecast.models,
+        forecast.stations,
+        forecast.models_ensemble,
+        toggleStatistics
+      );
+
+      setPlotData(data);
+    }
+  }, [toggleStatistics, forecast]);
+
   if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
@@ -61,11 +76,6 @@ export const LineChart = ({ resize }: LineChartProps) => {
     );
   }
 
-  const plotData = createLineChartData(
-    forecast.models,
-    forecast.stations,
-    forecast.models_ensemble
-  );
   console.log("forecast", forecast);
 
   const mappedServices: { [key: string]: string } = mappedServicesJSON;
