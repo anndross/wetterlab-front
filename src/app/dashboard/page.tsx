@@ -79,7 +79,7 @@ export default function Dashboard() {
             <RefTimeOptions />
             <ServiceOptions />
             {params.chart === "LineChart" && <MeanOptions />}
-            <ToggleStatistics />
+            {params.chart === "LineChart" && <ToggleStatistics />}
           </div>
 
           <Button

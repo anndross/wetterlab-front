@@ -6,20 +6,17 @@ import { createBoxPlotData } from "./helpers/createBoxPlotData";
 import { Spinner } from "@nextui-org/spinner";
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json";
-
-export type DataType = {
-  date: string;
-  min: number;
-  p25: number;
-  median: number;
-  p75: number;
-  max: number;
-};
+import {
+  ModelsDataType,
+  ModelsEnsembleDataType,
+  StationsDataType,
+} from "@/types/dashboard";
 
 export interface ForecastType {
   dates: string[];
-  stations: DataType[];
-  models: DataType[];
+  stations: StationsDataType[];
+  models: ModelsDataType[];
+  models_ensemble: ModelsEnsembleDataType[];
 }
 
 interface BoxPlotProps {
@@ -45,7 +42,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     function handleLoadForecast() {
       startTransition(async () => {
         const forecast = await fetch(
-          `/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=30`
+          `/wetterlab/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=30`
         ).then((data) => data.json());
 
         setForecast(forecast);
@@ -81,10 +78,10 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     rh: "%",
   };
 
-  const { data, dates } = createBoxPlotData(
-    forecast?.models,
-    forecast?.stations
-  ) || { data: [], dates: [] };
+  const { data, dates } = createBoxPlotData(forecast?.models_ensemble) || {
+    data: [],
+    dates: [],
+  };
 
   const formattedDates = dates.map((date) => dayjs(date).format("MM/YYYY"));
 

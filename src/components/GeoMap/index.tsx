@@ -39,7 +39,7 @@ export function GeoMap() {
 
     async function handleAvailableCoordinates() {
       const availableCoordinatesData = await fetch(
-        `/api/erp/available-services?customer_id=${customerId}`
+        `/wetterlab/api/erp/available-services?customer_id=${customerId}`
       ).then((res) => res.ok && res.json());
 
       setAvailableCoordinates(availableCoordinatesData);

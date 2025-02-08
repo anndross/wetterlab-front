@@ -35,7 +35,7 @@ export const LineChart = ({ resize }: LineChartProps) => {
     function handleLoadForecast() {
       startTransition(async () => {
         const forecast = await fetch(
-          `/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
+          `/wetterlab/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
         ).then((data) => data.json());
 
         setForecast(forecast);

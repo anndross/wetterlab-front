@@ -20,7 +20,7 @@ export function RefTimeOptions() {
     function handleRefTimes() {
       startTransition(async () => {
         const data = await fetch(
-          `/api/meteor/models-ref-times?longitude=${lon}&latitude=${lat}`
+          `/wetterlab/api/meteor/models-ref-times?longitude=${lon}&latitude=${lat}`
         ).then((res) => res.json());
 
         if (data.length) {

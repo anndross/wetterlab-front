@@ -3,6 +3,11 @@ import pkg from "webpack";
 
 const { ProvidePlugin } = pkg;
 
+const backendBasePath =
+  process.env.NODE_ENV === "production"
+    ? "http://34.23.51.63/api/:path*"
+    : "http://127.0.0.1:8000/api/:path*";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   logging: {
@@ -13,11 +18,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api/:path*",
-        destination:
-          process.env.NODE_ENV === "production"
-            ? "http://34.23.51.63/api/:path*"
-            : "http://127.0.0.1:8000/api/:path*",
+        source: "/wetterlab/api/:path*",
+        destination: backendBasePath,
       },
     ];
   },

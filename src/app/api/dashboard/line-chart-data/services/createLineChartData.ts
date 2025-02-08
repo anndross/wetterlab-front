@@ -16,20 +16,10 @@ type LineChartDataType = {
   fillcolor?: string;
 };
 
-type BaseConfigType = {
-  type?: "scatter";
-  mode?: "lines+markers" | "none";
-  name?: string;
-  line?: { color: string };
-  fill?: "tonexty";
-  fillcolor?: string;
-};
-
 export function createLineChartData(
   models: ModelsDataType[] | undefined,
   stations: StationsDataType[] | undefined,
-  modelsEnsemble: ModelsEnsembleDataType[] | undefined,
-  disableStatistics: boolean
+  modelsEnsemble: ModelsEnsembleDataType[] | undefined
 ) {
   function getAxisData(data: Partial<ModelsEnsembleDataType>[] | undefined) {
     if (!data?.length) return { dates: [], statistics: {} };
@@ -76,8 +66,7 @@ export function createLineChartData(
       statistics?.p25 &&
       statistics?.median &&
       statistics?.p75 &&
-      statistics?.max &&
-      !disableStatistics
+      statistics?.max
     ) {
       return [
         // Linha central (mediana)
@@ -197,7 +186,6 @@ export function createLineChartData(
     modelsEnsembleData.statistics,
     modelsEnsembleBaseConfig
   );
-  console.log("stationsLineChartData", modelsEnsembleLineChartData);
 
   return [
     ...modelsLineChartData,
