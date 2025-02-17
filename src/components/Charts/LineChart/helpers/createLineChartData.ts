@@ -29,7 +29,7 @@ export function createLineChartData(
   models: ModelsDataType[] | undefined,
   stations: StationsDataType[] | undefined,
   modelsEnsemble: ModelsEnsembleDataType[] | undefined,
-  disableStatistics: boolean
+  enableStatistics: boolean
 ) {
   function getAxisData(data: Partial<ModelsEnsembleDataType>[] | undefined) {
     if (!data?.length) return { dates: [], statistics: {} };
@@ -77,7 +77,7 @@ export function createLineChartData(
       statistics?.median &&
       statistics?.p75 &&
       statistics?.max &&
-      !disableStatistics
+      enableStatistics
     ) {
       return [
         // Linha central (mediana)
@@ -202,6 +202,6 @@ export function createLineChartData(
   return [
     ...modelsLineChartData,
     ...stationsLineChartData,
-    ...modelsEnsembleLineChartData,
+    ...(enableStatistics ? modelsEnsembleLineChartData : []),
   ];
 }

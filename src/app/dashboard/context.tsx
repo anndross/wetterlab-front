@@ -41,7 +41,7 @@ const DashboardContext = createContext<DashboardType>({
     chart: "LineChart",
   },
   setParams: () => {},
-  toggleStatistics: false,
+  toggleStatistics: true,
   setToggleStatistics: () => {},
 });
 

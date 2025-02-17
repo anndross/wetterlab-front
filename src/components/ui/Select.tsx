@@ -53,12 +53,15 @@ export function Select({
           >
             <input
               placeholder="Selecione a rodada"
-              className="placeholder-text-foreground-500 text-black font-normal w-full text-start text-small truncate group-data-[has-value=true]:text-default-foreground relative px-3 gap-3 w-full inline-flex flex-row items-center shadow-sm tap-highlight-transparent group-data-[focus=true]:bg-default-50 h-10 min-h-10 rounded-tl-medium rounded-bl-medium bg-default-100 data-[hover=true]:bg-default-50 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2"
+              className={clsx(
+                "placeholder-text-foreground-500 rounded-l-md  text-black font-normal w-full text-start text-small truncate group-data-[has-value=true]:text-default-foreground relative px-3 gap-3 inline-flex",
+                "flex-row items-center tap-highlight-transparent group-data-[focus=true]:bg-default-50 h-10 min-h-10 bg-white border border-zinc-200 border-r-0 data-[hover=true]:bg-default-50 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2"
+              )}
               onFocus={() => toggleMenu()}
               {...getInputProps()}
             />
             <button
-              className="w-5 h-10 flex items-center justify-center bg-default-100 rounded-tr-medium rounded-br-medium"
+              className="w-5 h-10 flex items-center justify-center bg-white border border-l-0 border-zinc-200 rounded-r-md"
               onClick={() => toggleMenu()}
             >
               {isPending && isPending !== undefined ? (

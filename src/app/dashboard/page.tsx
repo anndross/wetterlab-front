@@ -5,12 +5,12 @@ import { ServiceOptions } from "@/components/ServiceOptions";
 import { ReactNode, useState } from "react";
 import DashboardContext, { DashboardType } from "./context";
 import { MeanOptions } from "@/components/MeanOptions";
-import { Button } from "@nextui-org/button";
 import clsx from "clsx";
 import { RefTimeOptions } from "@/components/RefTimeOptions";
 import { SelectChart } from "@/components/SelectChart";
 import dynamic from "next/dynamic";
 import { ToggleStatistics } from "@/components/ToggleStatistics";
+import { Button } from "@/components/ui/button";
 const GeoMapNoSSR = dynamic(
   () => import("@/components/GeoMap").then((module) => module.GeoMap),
   {
@@ -38,7 +38,7 @@ type ChartType = {
 
 export default function Dashboard() {
   const [resize, setResize] = useState(false);
-  const [toggleStatistics, setToggleStatistics] = useState(false);
+  const [toggleStatistics, setToggleStatistics] = useState(true);
 
   const [params, setParams] = useState<DashboardType["params"]>({
     location: {
@@ -84,6 +84,7 @@ export default function Dashboard() {
 
           <Button
             className="w-full min-w-full"
+            variant="outline"
             onClick={() => setResize((prev) => !prev)}
           >
             {resize ? <FaLongArrowAltRight /> : <FaLongArrowAltLeft />}
