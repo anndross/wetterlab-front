@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import { Button } from "../ui/button";
 
 export function MeanOptions() {

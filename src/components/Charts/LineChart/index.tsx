@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { Spinner } from "@nextui-org/spinner";
-import { createLineChartData } from "./helpers/createLineChartData";
-import { handleStoreZoomInfo } from "./helpers/handleStoreZoomInfo";
+import { createLineChartData } from "./services/createLineChartData";
+import { handleStoreZoomInfo } from "./services/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
 interface LineChartProps {
@@ -35,7 +35,7 @@ export const LineChart = ({ resize }: LineChartProps) => {
     function handleLoadForecast() {
       startTransition(async () => {
         const forecast = await fetch(
-          `/wetterlab/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
+          `/wetterlab/api/meteor/forecast?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
         ).then((data) => data.json());
 
         setForecast(forecast);

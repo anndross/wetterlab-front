@@ -2,8 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../Button";
-import { Typography } from "../Typography";
+import { Button } from "../ui/Button";
+import { Typography } from "../ui/Typography";
 import { Menu } from "./Menu";
 import { UserDropdown } from "./UserDropdown";
 import { useCookies } from "next-client-cookies";

@@ -16,7 +16,7 @@ import "leaflet/dist/leaflet.css";
 import { useContext, useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
 import { decodeJWT } from "@/utils/decodeJWT";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import { FaCopy } from "react-icons/fa";
 
 export function GeoMap() {

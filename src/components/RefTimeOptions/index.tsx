@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext, useEffect, useState, useTransition } from "react";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import { Select } from "../ui/Select";
 
 export function RefTimeOptions() {
@@ -20,7 +20,7 @@ export function RefTimeOptions() {
     function handleRefTimes() {
       startTransition(async () => {
         const data = await fetch(
-          `/wetterlab/api/meteor/models-ref-times?longitude=${lon}&latitude=${lat}`
+          `/wetterlab/api/meteor/models-ref-times?lon=${lon}&lat=${lat}`
         ).then((res) => res.json());
 
         if (data.length) {

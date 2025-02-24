@@ -91,7 +91,7 @@ export function createLineChartData(
           y: statistics.min,
           y0: statistics.p25, // Define a base da área preenchida
           fill: "tonexty",
-          fillcolor: baseConfig[2].fillcolor,
+          fillcolor: baseConfig[1].fillcolor,
           type: "scatter",
           mode: "none",
           name: "Faixa min-p25",
@@ -102,7 +102,7 @@ export function createLineChartData(
           y: statistics.p75,
           y0: statistics.median, // Define a base da área preenchida
           fill: "tonexty",
-          fillcolor: baseConfig[1].fillcolor,
+          fillcolor: baseConfig[2].fillcolor,
           type: "scatter",
           mode: "none",
           name: "Faixa p25-p75",
@@ -113,7 +113,7 @@ export function createLineChartData(
           y: statistics.p25,
           y0: statistics.median, // Define a base da área preenchida
           fill: "tonexty",
-          fillcolor: baseConfig[2].fillcolor,
+          fillcolor: baseConfig[3].fillcolor,
           type: "scatter",
           mode: "none",
           name: "Faixa min-p25",
@@ -124,7 +124,7 @@ export function createLineChartData(
           y: statistics.max,
           y0: statistics.p75, // Define a base da área preenchida
           fill: "tonexty",
-          fillcolor: baseConfig[3].fillcolor,
+          fillcolor: baseConfig[4].fillcolor,
           type: "scatter",
           mode: "none",
           name: "Faixa p75-max",
@@ -146,12 +146,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões",
-      line: { color: "#dd6800" },
+      line: { color: "#CD5C08", width: 2 },
     },
-    { fillcolor: "#dd680029" }, // Ciano transparente
-    { fillcolor: "#dd68004a" }, // Azul claro e transparente
-    { fillcolor: "#dd680029" }, // Verde transparente
-    { fillcolor: "#dd68004a" }, // Azul claro e transparente
+    { fillcolor: "" },
+    { fillcolor: "" },
+    { fillcolor: "" },
+    { fillcolor: "" },
   ];
 
   const stationsBaseConfig: any = [
@@ -159,12 +159,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Observados",
-      line: { color: "#000", dash: "dash" },
+      line: { color: "#35374B", dash: "dash", width: 2 },
     },
-    { fillcolor: "#00000045" }, // Azul claro e transparente
-    { fillcolor: "#00000021" }, // Azul claro e transparente
-    { fillcolor: "#00000045" }, // Verde transparente
-    { fillcolor: "#00000021" }, // Ciano transparente
+    { fillcolor: "" },
+    { fillcolor: "" },
+    { fillcolor: "" },
+    { fillcolor: "" },
   ];
 
   const modelsEnsembleBaseConfig: any = [
@@ -172,12 +172,12 @@ export function createLineChartData(
       type: "scatter",
       mode: "lines+markers",
       name: "Previsões Ensemble",
-      line: { color: "#5f5f5f" },
+      line: { color: "#5C7285" },
     },
-    { fillcolor: "#00000021" }, // Azul claro e transparente
-    { fillcolor: "#00000014" }, // Azul claro e transparente
-    { fillcolor: "#00000021" }, // Verde transparente
-    { fillcolor: "#00000014" }, // Ciano transparente
+    { fillcolor: "#5c72851a" },
+    { fillcolor: "#5c728533" },
+    { fillcolor: "#5c728533" },
+    { fillcolor: "#5c72851a" },
   ];
 
   const modelsLineChartData = generateLineChartDataWithY0(
@@ -200,8 +200,8 @@ export function createLineChartData(
   console.log("stationsLineChartData", modelsEnsembleLineChartData);
 
   return [
-    ...modelsLineChartData,
     ...stationsLineChartData,
     ...(enableStatistics ? modelsEnsembleLineChartData : []),
+    ...modelsLineChartData,
   ];
 }

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { Typography } from "../Typography";
+import { Typography } from "../ui/Typography";
 
 export interface MenuProps {
   show?: boolean;

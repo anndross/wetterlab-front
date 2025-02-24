@@ -1,4 +1,4 @@
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/ui/Footer";
 import { Header } from "@/components/Header";
 import { clsx } from "clsx";
 import type { Metadata } from "next";

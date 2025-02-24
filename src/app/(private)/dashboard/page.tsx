@@ -12,7 +12,7 @@ import dynamic from "next/dynamic";
 import { ToggleStatistics } from "@/components/ToggleStatistics";
 import { Button } from "@/components/ui/button";
 const GeoMapNoSSR = dynamic(
-  () => import("@/components/GeoMap").then((module) => module.GeoMap),
+  () => import("@/components/ui/GeoMap").then((module) => module.GeoMap),
   {
     ssr: false,
   }

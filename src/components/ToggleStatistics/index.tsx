@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Switch } from "../ui/switch";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 
 export function ToggleStatistics() {
   const { toggleStatistics, setToggleStatistics } =

@@ -1,6 +1,8 @@
 import { Select } from "../ui/Select";
 import { useContext } from "react";
-import DashboardContext, { DashboardType } from "@/app/dashboard/context";
+import DashboardContext, {
+  DashboardType,
+} from "@/app/(private)/dashboard/context";
 
 type Charts = {
   label: string;

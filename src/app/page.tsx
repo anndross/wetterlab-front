@@ -1,6 +1,6 @@
-import { Card } from "@/components/Card";
-import { Carousel } from "@/components/Carousel";
-import { Typography } from "@/components/Typography";
+import { Card } from "@/components/ui/Card";
+import { Carousel } from "@/components/ui/Carousel";
+import { Typography } from "@/components/ui/Typography";
 import Image from "next/image";
 
 export default function Home() {

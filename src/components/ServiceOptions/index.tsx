@@ -1,5 +1,5 @@
 "use client";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import { useContext, useEffect } from "react";
 import { CiDroplet, CiTempHigh } from "react-icons/ci";
 import { IoRainyOutline } from "react-icons/io5";

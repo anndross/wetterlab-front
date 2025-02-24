@@ -1,8 +1,11 @@
 "use client";
-import DashboardContext from "@/app/dashboard/context";
+import DashboardContext from "@/app/(private)/dashboard/context";
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import Plot from "react-plotly.js";
-import { createBoxPlotData } from "./helpers/createBoxPlotData";
+import {
+  BoxPlotDataResponseType,
+  createBoxPlotData,
+} from "./services/createBoxPlotData";
 import { Spinner } from "@nextui-org/spinner";
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json";
@@ -12,11 +15,17 @@ import {
   StationsDataType,
 } from "@/types/dashboard";
 
+export type BoxPlotDataType = {
+  y: number[] | [];
+  x: string[] | [];
+  type: "box";
+  name: string;
+  marker: { color: string };
+};
+
 export interface ForecastType {
   dates: string[];
-  stations: StationsDataType[];
-  models: ModelsDataType[];
-  models_ensemble: ModelsEnsembleDataType[];
+  data: BoxPlotDataType[];
 }
 
 interface BoxPlotProps {
@@ -24,7 +33,10 @@ interface BoxPlotProps {
 }
 
 export const BoxPlot = ({ resize }: BoxPlotProps) => {
-  const [forecast, setForecast] = useState<ForecastType>();
+  const [forecast, setForecast] = useState<ForecastType>({
+    data: [],
+    dates: [],
+  });
   const [isResizing, setIsResizing] = useState(false);
   const {
     params: {
@@ -41,11 +53,18 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
   useEffect(() => {
     function handleLoadForecast() {
       startTransition(async () => {
-        const forecast = await fetch(
-          `/wetterlab/api/meteor/forecast?latitude=${lat}&longitude=${lon}&ref-time=${refTime}&service=${service}&mean=30`
-        ).then((data) => data.json());
+        const res = await fetch(
+          `/api/services/box-plot?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`,
+          {
+            cache: "no-store",
+          }
+        );
 
-        setForecast(forecast);
+        if (!res.ok) return;
+
+        const { data } = await res.json();
+
+        setForecast(data);
       });
     }
 
@@ -59,7 +78,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     }, 200);
   }, [resize]);
 
-  if (isPending || !forecast?.stations || !forecast.models || isResizing) {
+  if (isPending || !forecast?.data || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -78,23 +97,20 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     rh: "%",
   };
 
-  const { data, dates } = createBoxPlotData(forecast?.models_ensemble) || {
-    data: [],
-    dates: [],
-  };
-
-  const formattedDates = dates.map((date) => dayjs(date).format("MM/YYYY"));
+  const formattedDates = forecast?.dates.map((date) =>
+    dayjs(date).format("MM/YYYY")
+  );
 
   return (
     <Plot
-      data={data}
+      data={forecast.data}
       layout={{
         title: `${mappedServices[service]} - ${state}, ${city}`,
         xaxis: {
           title: "Datas",
           type: "category", // Configurar eixo X como categórico para lidar com agrupamento
           tickformat: "%d/%m/%Y", // Exemplo: 15/01/2024
-          tickvals: dates, // Os valores reais no eixo
+          tickvals: forecast.dates, // Os valores reais no eixo
           ticktext: formattedDates,
         },
         yaxis: {
