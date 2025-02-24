@@ -9,13 +9,8 @@ export async function GET(req: Request) {
     const refTime = searchParams.get("ref-time");
     const service = searchParams.get("service");
 
-    const basePath =
-      process.env.NODE_ENV === "production"
-        ? "http://34.23.51.63"
-        : "http://127.0.0.1:8000";
-
     const res = await fetch(
-      `${basePath}/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`
+      `http://34.23.51.63/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`
     );
 
     const { stations, models, models_ensemble } = await res.json();
