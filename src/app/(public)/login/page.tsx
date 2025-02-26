@@ -18,16 +18,16 @@ export default function Login() {
         <form className="space-y-4 w-full" action={AuthAction}>
           <div>
             <label className="label" htmlFor="login-email">
-              <span className="text-base label-text">Email</span>
+              <span className="text-base text-zinc-600">Email</span>
             </label>
-            <div className="flex h-9">
+            <div className="flex h-9 my-2">
               <div className="h-full w-10 border flex items-center justify-center">
                 <FaUser color="#7f7f7f" />
               </div>
               <input
                 type="email"
                 name="email"
-                className="text-black w-full h-full input input-bordered rounded-none input-primary bg-white"
+                className="text-black w-full h-full indent-2 border border-zinc-200 rounded-none input-primary bg-white"
                 required
                 id="login-email"
                 placeholder="company@domain.com"
