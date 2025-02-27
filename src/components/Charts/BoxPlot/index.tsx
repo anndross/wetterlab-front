@@ -9,11 +9,6 @@ import {
 import { Spinner } from "@nextui-org/spinner";
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json";
-import {
-  ModelsDataType,
-  ModelsEnsembleDataType,
-  StationsDataType,
-} from "@/types/dashboard";
 
 export type BoxPlotDataType = {
   y: number[] | [];
@@ -25,7 +20,9 @@ export type BoxPlotDataType = {
 
 export interface ForecastType {
   dates: string[];
-  data: BoxPlotDataType[];
+  stations: any[];
+  models: any[];
+  models_ensemble: any[];
 }
 
 interface BoxPlotProps {
@@ -33,10 +30,13 @@ interface BoxPlotProps {
 }
 
 export const BoxPlot = ({ resize }: BoxPlotProps) => {
-  const [forecast, setForecast] = useState<ForecastType>({
-    data: [],
+  const [forecast, setForecast] = useState<any>({
     dates: [],
+    stations: [],
+    models: [],
+    models_ensemble: [],
   });
+
   const [isResizing, setIsResizing] = useState(false);
   const {
     params: {
@@ -54,7 +54,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     function handleLoadForecast() {
       startTransition(async () => {
         const res = await fetch(
-          `/api/services/box-plot?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`,
+          `/wetterlab/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`,
           {
             cache: "no-store",
           }
@@ -62,7 +62,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
 
         if (!res.ok) return;
 
-        const { data } = await res.json();
+        const data = await res.json();
 
         setForecast(data);
       });
@@ -78,7 +78,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     }, 200);
   }, [resize]);
 
-  if (isPending || !forecast?.data || isResizing) {
+  if (isPending || !forecast || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
         <Spinner
@@ -97,20 +97,37 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
     rh: "%",
   };
 
-  const formattedDates = forecast?.dates.map((date) =>
+  const formattedDates = forecast?.dates.map((date: string) =>
     dayjs(date).format("MM/YYYY")
   );
 
+  const { stations, models, models_ensemble } = forecast;
+
+  let boxPlotData: BoxPlotDataResponseType = {
+    data: [],
+    dates: [],
+  };
+
+  try {
+    const data = createBoxPlotData(models_ensemble, stations, models);
+
+    boxPlotData = data || { data: [], dates: [] };
+  } catch {
+    boxPlotData = {
+      data: [],
+      dates: [],
+    };
+  }
   return (
     <Plot
-      data={forecast.data}
+      data={boxPlotData.data}
       layout={{
         title: `${mappedServices[service]} - ${state}, ${city}`,
         xaxis: {
           title: "Datas",
           type: "category", // Configurar eixo X como categórico para lidar com agrupamento
           tickformat: "%d/%m/%Y", // Exemplo: 15/01/2024
-          tickvals: forecast.dates, // Os valores reais no eixo
+          tickvals: boxPlotData.dates, // Os valores reais no eixo
           ticktext: formattedDates,
         },
         yaxis: {
