@@ -4,7 +4,6 @@ import { clsx } from "clsx";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { NextUIProvider } from "@nextui-org/system";
 import { CookiesProvider } from "next-client-cookies/server";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,11 +24,9 @@ export default function RootLayout({
         className={clsx(inter.className, "pt-20 flex flex-col justify-between")}
       >
         <CookiesProvider>
-          <NextUIProvider>
-            <Header />
-            {children}
-            <Footer />
-          </NextUIProvider>
+          <Header />
+          {children}
+          <Footer />
         </CookiesProvider>
       </body>
     </html>

@@ -6,7 +6,7 @@ import {
   BoxPlotDataResponseType,
   createBoxPlotData,
 } from "./services/createBoxPlotData";
-import { Spinner } from "@nextui-org/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json";
 
@@ -81,10 +81,9 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
   if (isPending || !forecast || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
-        <Spinner
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          size="lg"
-        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <Spinner />
+        </div>
       </div>
     );
   }

@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-import { Spinner } from "@nextui-org/spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { createLineChartData } from "./services/createLineChartData";
 import { handleStoreZoomInfo } from "./services/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
@@ -68,10 +68,9 @@ export const LineChart = ({ resize }: LineChartProps) => {
   if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (
       <div className="w-full h-full bg-white rounded-3xl relative">
-        <Spinner
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          size="lg"
-        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <Spinner />
+        </div>
       </div>
     );
   }

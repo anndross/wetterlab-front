@@ -1,21 +1,21 @@
 "use client";
+
+import { Button } from "@/components/ui/button";
 import {
-  Dropdown,
-  DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
-  DropdownItem,
-} from "@nextui-org/dropdown";
-import { Button } from "@nextui-org/button";
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { decodeJWT } from "@/utils/decodeJWT";
 import { useCookies } from "next-client-cookies";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
-import { decodeJWT } from "@/utils/decodeJWT";
 
 export function UserDropdown() {
-  const iconClasses =
-    "text-xl text-default-500 pointer-events-none flex-shrink-0";
-
   const cookies = useCookies();
   const [user, setUser] = useState<any>({});
 
@@ -28,49 +28,45 @@ export function UserDropdown() {
       setUser(decodedToken);
     }
   }, [token]);
-
   return (
-    <Dropdown
-      showArrow
-      classNames={{
-        base: "before:bg-default-200", // change arrow background
-        content: "py-1 px-1 border border-default-200 bg-white",
-      }}
-    >
-      <DropdownTrigger>
-        <Button variant="flat" isIconOnly color="default">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
           <CiUser />
         </Button>
-      </DropdownTrigger>
-      <DropdownMenu variant="faded" aria-label="Dropdown menu with description">
-        <DropdownSection title="Informações">
-          <DropdownItem description="E-mail" className="text-black">
-            {user?.email}
-          </DropdownItem>
-          <DropdownItem description="Corporação" className="text-black">
-            {user?.company_name}
-          </DropdownItem>
-          <DropdownItem description="País" className="text-black">
-            {user?.country}
-          </DropdownItem>
-          <DropdownItem description="Localidade" className="text-black">
-            {user?.city}
-          </DropdownItem>
-          <DropdownItem description="Endereço" className="text-black">
-            {user?.address}
-          </DropdownItem>
-          <DropdownItem>
-            <Button
-              onClick={() => {
-                cookies.remove("token");
-                window.location.reload();
-              }}
-            >
-              Sair
-            </Button>
-          </DropdownItem>
-        </DropdownSection>
-      </DropdownMenu>
-    </Dropdown>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-auto">
+        <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Email: {user?.email}</DropdownMenuItem>
+          <DropdownMenuItem>Corporação: {user?.company_name}</DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Endereço</DropdownMenuLabel>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem>País: {user?.country}</DropdownMenuItem>
+          <DropdownMenuItem>Cidade: {user?.city}</DropdownMenuItem>
+          <DropdownMenuItem>Rua: {user?.address}</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Button
+            variant="outline"
+            onClick={() => {
+              cookies.remove("token");
+              window.location.reload();
+            }}
+          >
+            Sair
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
