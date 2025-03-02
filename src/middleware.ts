@@ -2,17 +2,23 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function middleware(req: NextRequest) {
   const cookieStore = cookies();
   const token = cookieStore.get("token");
 
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  const { pathname } = new URL(req.clone().url);
+
+  if (pathname === "/login" && token?.value.length) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  if (pathname === "/dashboard" && !token?.value.length) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: "/dashboard",
+  matcher: ["/dashboard", "/login"],
 };

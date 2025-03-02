@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import Downshift, { DownshiftProps } from "downshift";
+import { Spinner } from "@/components/ui/spinner";
 
 interface SelectProps extends DownshiftProps<any> {
   items: {
@@ -64,8 +65,8 @@ export function Select({
               className="w-5 h-10 flex items-center justify-center bg-white border border-l-0 border-zinc-200 rounded-r-md"
               onClick={() => toggleMenu()}
             >
-              {isPending && isPending !== undefined ? (
-                <div className="animate-spinner-linear-spin border border-black border-b-white rounded-full h-3 w-3" />
+              {isPending ? (
+                <Spinner className="!h-3 !w-3  mr-3" />
               ) : (
                 <svg
                   aria-hidden="true"

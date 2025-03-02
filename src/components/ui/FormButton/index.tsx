@@ -8,7 +8,7 @@ export function FormButton({ children }: ChildrenI) {
 
   return (
     <Button
-      variant="outline"
+      variant="secondary"
       className="w-full"
       type="submit"
       disabled={pending}

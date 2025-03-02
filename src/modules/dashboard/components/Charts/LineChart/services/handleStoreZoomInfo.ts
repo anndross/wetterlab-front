@@ -16,7 +16,7 @@ export const handleStoreZoomInfo = (data: any) => {
 
   const {
     range: [date1, date2],
-  } = data.layout.xaxis;
+  } = data?.layout?.xaxis;
 
   zoomXElement.textContent =
     date1 && date2

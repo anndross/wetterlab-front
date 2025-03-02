@@ -2,8 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../ui/Button";
-import { Typography } from "../ui/Typography";
+import { Button } from "@/components/ui/button";
+import { Typography } from "@/components/ui/Typography";
 import { Menu } from "./Menu";
 import { UserDropdown } from "./UserDropdown";
 import { useCookies } from "next-client-cookies";
@@ -61,12 +61,17 @@ export function Header() {
           <div className="md:flex hidden gap-4">
             {!token ? (
               <Link href="/login">
-                <Button>Login</Button>
+                <Button variant="outline">Login</Button>
               </Link>
             ) : (
               <UserDropdown />
             )}
-            <Button variant="secondary">Fale conosco</Button>
+            <Button
+              className="bg-main text-white hover:text-black"
+              variant="outline"
+            >
+              Fale conosco
+            </Button>
           </div>
 
           <button

@@ -1,13 +1,14 @@
 "use client";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 import { Spinner } from "@/components/ui/spinner";
 import { createLineChartData } from "./services/createLineChartData";
 import { handleStoreZoomInfo } from "./services/handleStoreZoomInfo";
 import { Config, Layout } from "plotly.js";
-import DashboardContext from "@/app/(private)/dashboard/context";
 import mappedServicesJSON from "@/data/mappedServices.json";
+import { useDashStore } from "@/modules/dashboard/store";
+import { debounce } from "lodash";
 
 interface LineChartProps {
   resize?: boolean;
@@ -15,14 +16,12 @@ interface LineChartProps {
 
 export const LineChart = ({ resize }: LineChartProps) => {
   const {
-    params: {
-      location: { coordinate, state, city },
-      refTime,
-      service,
-      mean,
-    },
-    toggleStatistics,
-  } = useContext(DashboardContext);
+    location: { coordinate, state, city },
+    refTime,
+    service,
+    mean,
+    enableStatistics,
+  } = useDashStore((state) => state.params);
 
   const [lat, lon] = coordinate;
 
@@ -31,19 +30,32 @@ export const LineChart = ({ resize }: LineChartProps) => {
   const [isPending, startTransition] = useTransition();
   const [isResizing, setIsResizing] = useState(false);
 
+  const debounceLoadForecast = useCallback(
+    debounce(
+      (lat, lon, refTime, service, mean) =>
+        startTransition(async () => {
+          const res = await fetch(
+            `/wetterlab/api/meteor/forecast?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`,
+            {
+              cache: "no-store",
+            }
+          );
+
+          if (!res.ok) return;
+
+          const data = await res.json();
+
+          setForecast(data);
+        }),
+      1000
+    ),
+    [] // será criada apenas uma vez inicialmente
+  );
+
   useEffect(() => {
-    function handleLoadForecast() {
-      startTransition(async () => {
-        const forecast = await fetch(
-          `/wetterlab/api/meteor/forecast?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}&mean=${mean}`
-        ).then((data) => data.json());
-
-        setForecast(forecast);
-      });
-    }
-
-    if (lat && lon && refTime && service && mean) handleLoadForecast();
-  }, [lat, lon, refTime, service, mean]);
+    if (lat && lon && refTime.value && service && mean)
+      debounceLoadForecast(lat, lon, refTime.value, service, mean);
+  }, [refTime, service, mean]);
 
   useEffect(() => {
     setIsResizing(true);
@@ -58,12 +70,12 @@ export const LineChart = ({ resize }: LineChartProps) => {
         forecast.models,
         forecast.stations,
         forecast.models_ensemble,
-        toggleStatistics
+        enableStatistics
       );
 
       setPlotData(data);
     }
-  }, [toggleStatistics, forecast]);
+  }, [enableStatistics, forecast]);
 
   if (isPending || !forecast?.stations || !forecast.models || isResizing) {
     return (

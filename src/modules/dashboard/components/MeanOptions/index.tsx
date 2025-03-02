@@ -1,28 +1,28 @@
-import { useContext, useEffect } from "react";
-import DashboardContext from "@/app/(private)/dashboard/context";
-import { Button } from "../ui/button";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Mean, useDashStore } from "@/modules/dashboard/store";
+import clsx from "clsx";
 
 export function MeanOptions() {
-  const { params, setParams } = useContext(DashboardContext);
+  const { params, setParams } = useDashStore();
   const { mean } = params;
 
   useEffect(() => {
-    setParams((prev: any) => ({
-      ...prev,
+    setParams({
       mean: 1,
-    }));
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSelectPeriod = (value: number) =>
-    setParams((prev: any) => ({
-      ...prev,
+  const handleSelectPeriod = (value: Mean) =>
+    setParams({
       mean: value,
-    }));
-  const markSelectedOption = (value: number) => {
-    if (mean == value) return "default";
+    });
 
-    return "outline";
+  const markSelectedOption = (value: number) => {
+    if (mean == value) return "bg-main text-white hover:bg-main";
+
+    return "bg-white";
   };
 
   return (
@@ -32,33 +32,33 @@ export function MeanOptions() {
       </span>
       <div className="flex gap-2">
         <Button
-          className="min-w-10 w-10"
+          className={clsx("min-w-10 w-10", markSelectedOption(1))}
           onClick={() => handleSelectPeriod(1)}
-          variant={markSelectedOption(1)}
+          variant="outline"
           title="Média de 1 dia"
         >
           1d
         </Button>
         <Button
-          className="min-w-10 w-10"
+          className={clsx("min-w-10 w-10", markSelectedOption(7))}
           onClick={() => handleSelectPeriod(7)}
-          variant={markSelectedOption(7)}
+          variant="outline"
           title="Média de 7 dias"
         >
           7d
         </Button>
         <Button
-          className="min-w-10 w-10"
+          className={clsx("min-w-10 w-10", markSelectedOption(15))}
           onClick={() => handleSelectPeriod(15)}
-          variant={markSelectedOption(15)}
+          variant="outline"
           title="Média de 15 dias"
         >
           15d
         </Button>
         <Button
-          className="min-w-10 w-10"
+          className={clsx("min-w-10 w-10", markSelectedOption(30))}
           onClick={() => handleSelectPeriod(30)}
-          variant={markSelectedOption(30)}
+          variant="outline"
           title="Média de 30 dias"
         >
           30d

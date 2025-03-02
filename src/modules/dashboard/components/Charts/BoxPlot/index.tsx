@@ -1,6 +1,5 @@
 "use client";
-import DashboardContext from "@/app/(private)/dashboard/context";
-import React, { useContext, useEffect, useState, useTransition } from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import Plot from "react-plotly.js";
 import {
   BoxPlotDataResponseType,
@@ -9,6 +8,8 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import dayjs from "dayjs";
 import mappedServicesJSON from "@/data/mappedServices.json";
+import { useDashStore } from "@/modules/dashboard/store";
+import { debounce } from "lodash";
 
 export type BoxPlotDataType = {
   y: number[] | [];
@@ -39,37 +40,41 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
 
   const [isResizing, setIsResizing] = useState(false);
   const {
-    params: {
-      location: { coordinate, state, city },
-      refTime,
-      service,
-    },
-  } = useContext(DashboardContext);
+    location: { coordinate, state, city },
+    refTime,
+    service,
+  } = useDashStore((state) => state.params);
 
   const [lat, lon] = coordinate;
 
   const [isPending, startTransition] = useTransition();
 
+  const debounceLoadForecast = useCallback(
+    debounce(
+      (lat, lon, refTime, service) =>
+        startTransition(async () => {
+          const res = await fetch(
+            `/wetterlab/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`,
+            {
+              cache: "no-store",
+            }
+          );
+
+          if (!res.ok) return;
+
+          const data = await res.json();
+
+          setForecast(data);
+        }),
+      1000
+    ),
+    [] // será criada apenas uma vez inicialmente
+  );
+
   useEffect(() => {
-    function handleLoadForecast() {
-      startTransition(async () => {
-        const res = await fetch(
-          `/wetterlab/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`,
-          {
-            cache: "no-store",
-          }
-        );
-
-        if (!res.ok) return;
-
-        const data = await res.json();
-
-        setForecast(data);
-      });
-    }
-
-    if (lat && lon && refTime && service) handleLoadForecast();
-  }, [lat, lon, refTime, service]);
+    if (lat && lon && refTime.value && service)
+      debounceLoadForecast(lat, lon, refTime.value, service);
+  }, [refTime, service]);
 
   useEffect(() => {
     setIsResizing(true);
@@ -117,6 +122,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
       dates: [],
     };
   }
+
   return (
     <Plot
       data={boxPlotData.data}
@@ -125,7 +131,7 @@ export const BoxPlot = ({ resize }: BoxPlotProps) => {
         xaxis: {
           title: "Datas",
           type: "category", // Configurar eixo X como categórico para lidar com agrupamento
-          tickformat: "%d/%m/%Y", // Exemplo: 15/01/2024
+          tickformat: "%m/%Y", // Exemplo: 15/01/2024
           tickvals: boxPlotData.dates, // Os valores reais no eixo
           ticktext: formattedDates,
         },

@@ -1,35 +1,41 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { MapContainer, Marker, Popup, TileLayer, Circle } from "react-leaflet";
 import { Icon, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
 import { decodeJWT } from "@/utils/decodeJWT";
-import DashboardContext from "@/app/(private)/dashboard/context";
-import { FaCopy } from "react-icons/fa";
+import { useDashStore } from "../../store";
+import { debounce } from "lodash";
 
 export function GeoMap() {
-  const { params, setParams } = useContext(DashboardContext);
+  const { params, setParams } = useDashStore();
+
   const {
     location: { coordinate },
   } = params;
+
   const cookies = useCookies();
 
   const [lat, lon] = coordinate;
 
   const [availableCoordinates, setAvailableCoordinates] = useState<number[][]>(
     []
+  );
+
+  const debounceSetCoordinate = useCallback(
+    debounce(
+      (location) =>
+        setParams({
+          location: {
+            ...params.location,
+            coordinate: [location[0], location[1]],
+          },
+        }),
+      500
+    ),
+    [] // será criada apenas uma vez inicialmente
   );
 
   useEffect(() => {
@@ -46,13 +52,12 @@ export function GeoMap() {
 
       const [lat, lon] = availableCoordinatesData[0];
 
-      setParams((prev) => ({
-        ...prev,
+      setParams({
         location: {
-          ...prev.location,
+          ...params.location,
           coordinate: [lat, lon],
         },
-      }));
+      });
     }
 
     if (customerId) handleAvailableCoordinates();
@@ -66,17 +71,16 @@ export function GeoMap() {
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
       ).then((res) => res.json());
 
-      setParams((prev) => ({
-        ...prev,
+      setParams({
         location: {
-          ...prev.location,
+          ...params.location,
           state: coordinateInfo?.address?.state || "",
           city:
             coordinateInfo?.address?.city ||
             coordinateInfo?.address?.city_district ||
             "",
         },
-      }));
+      });
     }
     if (lat && lon) getCoorinateInfo();
 
@@ -104,13 +108,7 @@ export function GeoMap() {
               <Circle
                 eventHandlers={{
                   click: () =>
-                    setParams((prev) => ({
-                      ...prev,
-                      location: {
-                        ...prev.location,
-                        coordinate: [location[0], location[1]],
-                      },
-                    })),
+                    debounceSetCoordinate([location[0], location[1]]),
                 }}
                 key={`${location}-${lat}-${lon}`}
                 weight={10}

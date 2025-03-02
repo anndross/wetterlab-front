@@ -1,36 +1,10 @@
-import { ModelsEnsembleDataType } from "@/types/dashboard";
+import {
+  ModelsDataType,
+  ModelsEnsembleDataType,
+  StationsDataType,
+} from "@/types/dashboard";
 
-export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
-
-    const lat = searchParams.get("lat");
-    const lon = searchParams.get("lon");
-    const refTime = searchParams.get("ref-time");
-    const service = searchParams.get("service");
-
-    const res = await fetch(
-      `http://34.23.51.63/api/meteor/forecast-statistics?lat=${lat}&lon=${lon}&ref-time=${refTime}&service=${service}`
-    );
-
-    const { stations, models, models_ensemble } = await res.json();
-
-    const boxPlotData = createBoxPlotData(models_ensemble, models, stations);
-
-    return new Response(JSON.stringify({ data: boxPlotData }), {
-      status: 200,
-    });
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ message: "Algo deu errado", error: error }),
-      {
-        status: 500,
-      }
-    );
-  }
-}
-
-type BoxPlotDataType = {
+export type BoxPlotDataType = {
   y: number[] | [];
   x: string[] | [];
   type: "box";
@@ -38,12 +12,12 @@ type BoxPlotDataType = {
   marker: { color: string };
 };
 
-interface BoxPlotDataResponseType {
+export interface BoxPlotDataResponseType {
   data: BoxPlotDataType[];
   dates: Date[] | string[];
 }
 
-function createBoxPlotData(
+export function createBoxPlotData(
   modelsEnsemble: ModelsEnsembleDataType[] | undefined,
   models: ModelsEnsembleDataType[] | undefined,
   stations: ModelsEnsembleDataType[] | undefined
@@ -88,8 +62,8 @@ function createBoxPlotData(
     const values2 = getValues(modelsByIndex);
     const values3 = getValues(stationsByIndex);
 
-    const axisX = `${modelsEnsembleByIndex.date},`
-      .repeat(values1.length)
+    const axisX = `${modelsByIndex.date},`
+      .repeat(values2.length)
       .split(",")
       .filter((date) => {
         return !!new Date(date).getDate();
@@ -107,6 +81,11 @@ function createBoxPlotData(
 
   return {
     data: [modelsEnsembleTrace, modelsTrace, stationsTrace],
-    dates: modelsEnsembleTrace.x,
+    dates: Object.keys(
+      modelsTrace.x.reduce((acc, currentValue) => {
+        acc[currentValue] = currentValue;
+        return acc;
+      }, {} as { [key: string]: string })
+    ),
   };
 }

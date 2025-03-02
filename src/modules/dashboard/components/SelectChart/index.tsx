@@ -1,16 +1,13 @@
-import { Select } from "../ui/Select";
-import { useContext } from "react";
-import DashboardContext, {
-  DashboardType,
-} from "@/app/(private)/dashboard/context";
+import { Select } from "@/components/ui/Select";
+import { Chart, useDashStore } from "@/modules/dashboard/store";
 
 type Charts = {
   label: string;
-  value: DashboardType["params"]["chart"];
+  value: Chart;
 };
 
 export function SelectChart() {
-  const { setParams } = useContext(DashboardContext);
+  const setParams = useDashStore((state) => state.setParams);
 
   const charts: Charts[] = [
     { label: "Gráfico de linha", value: "LineChart" },
@@ -22,10 +19,9 @@ export function SelectChart() {
 
     const value = selectedItem.value;
 
-    setParams((prev) => ({
-      ...prev,
+    setParams({
       chart: value,
-    }));
+    });
   };
 
   return (

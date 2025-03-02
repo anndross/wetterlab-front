@@ -1,12 +1,12 @@
 "use client";
-import React, { useContext, useEffect, useState, useTransition } from "react";
-import DashboardContext from "@/app/(private)/dashboard/context";
-import { Select } from "../ui/Select";
+import React, { useEffect, useState, useTransition } from "react";
+import { Select } from "../../../../components/ui/Select";
+import { useDashStore } from "../../store";
 
 export function RefTimeOptions() {
   const [refTimes, setRefTimes] = useState<any[]>([]);
 
-  const { params, setParams } = useContext(DashboardContext);
+  const { params, setParams } = useDashStore();
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -26,10 +26,19 @@ export function RefTimeOptions() {
         if (data.length) {
           setRefTimes(data);
 
-          setParams((prev: any) => ({
-            ...prev,
-            refTime: data[0].value,
-          }));
+          setParams({
+            refTime: {
+              value: data[0].value,
+              // Essa variável está vindo junto com o ref-time pois
+              // os ref-times podem vir iguais para uma coordenada diferente,
+              // e a requisição do gráfico deve acontecer apenas quando o ref-time
+              // completa sua request, e não a coordenada. Por isso, está sendo enviada
+              // a coordenada respectiva, para alterar o estado
+              // e o useEffect ser ativado caso o ref-time
+              // seja igual ao anterior
+              respectiveCoordinate: [lat, lon],
+            },
+          });
         }
       });
     }
@@ -45,10 +54,12 @@ export function RefTimeOptions() {
     if (!selectedItem) return;
     const value = selectedItem.value;
 
-    setParams((prev) => ({
-      ...prev,
-      refTime: value,
-    }));
+    setParams({
+      refTime: {
+        value: value,
+        respectiveCoordinate: [lat, lon],
+      },
+    });
   };
 
   return (
@@ -56,7 +67,7 @@ export function RefTimeOptions() {
       label="Rodadas"
       items={refTimes}
       id="ref-times"
-      selectedItem={refTimes.find((time) => time.value === refTime)}
+      selectedItem={refTimes.find((time) => time.value === refTime.value)}
       initialSelectedItem={refTimes[0]}
       onChange={handleSelectionChange}
       itemToString={(item) => (item ? item.label : "")}
