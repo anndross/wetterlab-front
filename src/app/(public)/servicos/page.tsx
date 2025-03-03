@@ -11,15 +11,18 @@ export default function Services() {
         />
       </section>
 
-      <div className="flex flex-col gap-28 py-16 px-[5%]">
-        <section className="flex flex-col gap-8">
-          <p className="text-base font-semibold text-zinc-700">
-            Mia Energia: conheça nossa solução
-          </p>
-          <h2 className="text-3xl font-semibold text-zinc-700">
-            Transforme as mudanças climáticas em oportunidades de mercado
-          </h2>
-          <p className="text-sm font-normal text-zinc-700 w-3/4">
+      <div className="flex flex-col gap-28 py-16 px-default">
+        <section className="flex flex-col gap-10">
+          <div className="w-full flex flex-col items-start gap-4">
+            <h2 className="text-xl w-1/2 font-semibold text-cyan-600">
+              Mia Energia: conheça nossa solução
+            </h2>
+            <h3 className="text-5xl w-full font-semibold text-cyan-950">
+              Transforme as mudanças climáticas em oportunidades de mercado
+            </h3>
+          </div>
+
+          <p className="text-sm font-normal text-zinc-600 w-3/4">
             As mudanças climáticas afetam o mercado de energia em todo o mundo,
             causando mudanças na demanda, produção e preços de energia. Empresas
             desse setor precisam estar atentos a essas mudanças e tomar medidas
@@ -27,7 +30,7 @@ export default function Services() {
             isso, o MIA Energia é perfeito para você.
           </p>
 
-          <div className="flex gap-x-32 gap-y-10 flex-wrap mt-4">
+          <div className="w-full grid grid-cols-4 gap-14 mt-8">
             <div className="flex items-center gap-6 max-w-60">
               <Image
                 src="/assets/connected.png"
@@ -36,11 +39,46 @@ export default function Services() {
                 alt="Demanda de energia"
                 title="Demanda de energia"
               />
-              <p className="text-base font-normal text-zinc-700">
+              <p className="text-sm font-normal text-zinc-600">
                 Aumento da demanda de energia
               </p>
             </div>
-
+            <div className="flex items-center gap-6 max-w-60">
+              <Image
+                src="/assets/connected.png"
+                width={60}
+                height={60}
+                alt="Demanda de energia"
+                title="Demanda de energia"
+              />
+              <p className="text-sm font-normal text-zinc-600">
+                Aumento da demanda de energia
+              </p>
+            </div>
+            <div className="flex items-center gap-6 max-w-60">
+              <Image
+                src="/assets/connected.png"
+                width={60}
+                height={60}
+                alt="Demanda de energia"
+                title="Demanda de energia"
+              />
+              <p className="text-sm font-normal text-zinc-600">
+                Aumento da demanda de energia
+              </p>
+            </div>
+            <div className="flex items-center gap-6 max-w-60">
+              <Image
+                src="/assets/connected.png"
+                width={60}
+                height={60}
+                alt="Demanda de energia"
+                title="Demanda de energia"
+              />
+              <p className="text-sm font-normal text-zinc-600">
+                Aumento da demanda de energia
+              </p>
+            </div>
             <div className="flex items-center gap-6 max-w-60">
               <Image
                 src="/assets/connected.png"
@@ -82,16 +120,16 @@ export default function Services() {
           </div>
 
           <div className="w-56 mt-8">
-            <Button variant="secondary">Faça um teste</Button>
+            <Button>Faça um teste</Button>
           </div>
         </section>
 
-        <section className="flex justify-between gap-8">
+        <section className="flex justify-between gap-14">
           <div className="w-1/2 flex flex-col gap-6">
-            <h2 className="text-3xl font-semibold text-zinc-700">
+            <h2 className="text-3xl font-semibold text-cyan-950">
               Mia Energia: maximizando eficiência e reduzindo custos
             </h2>
-            <p className="text-sm font-normal text-zinc-700 w-3/4">
+            <p className="text-sm font-normal text-zinc-600 w-full">
               Com previsões de longo alcance, as empresas de energia podem
               ajustar a produção de energia para maximizar o uso de fontes
               renováveis, como a energia solar e eólica, quando as condições
@@ -113,17 +151,17 @@ export default function Services() {
         <section className="flex justify-between gap-8">
           <Image
             className="w-1/2 h-auto"
-            src="/assets/dash-image.png"
-            width={600}
-            height={600}
+            src="/assets/chart.png"
+            width={861}
+            height={513}
             alt="Gráfico mia acuracia"
             title="Gráfico mia acuracia"
           />
           <Image
             className="w-1/2 h-auto"
-            src="/assets/dash-image-2.png"
-            width={600}
-            height={600}
+            src="/assets/box-plot.png"
+            width={861}
+            height={513}
             alt="Gráfico mia vento parque"
             title="Gráfico mia vento parque"
           />

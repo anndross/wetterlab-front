@@ -14,14 +14,16 @@ export const handleStoreZoomInfo = (data: any) => {
 
   if (!zoomXElement) return;
 
-  const {
-    range: [date1, date2],
-  } = data?.layout?.xaxis;
+  const { range } = data?.layout?.xaxis;
 
-  zoomXElement.textContent =
-    date1 && date2
-      ? `${dayjs(date1).format("DD/MM/YYYY")} - ${dayjs(date2).format(
-          "DD/MM/YYYY"
-        )}`
-      : "não aplicado";
+  if (range.length >= 2) {
+    const [date1, date2] = range;
+
+    zoomXElement.textContent =
+      date1 && date2
+        ? `${dayjs(date1).format("DD/MM/YYYY")} - ${dayjs(date2).format(
+            "DD/MM/YYYY"
+          )}`
+        : "não aplicado";
+  }
 };

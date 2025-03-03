@@ -1,3 +1,4 @@
+import { Roboto } from "next/font/google";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -10,8 +11,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        main: ["var(--font-main)"],
+      },
       backgroundColor: {
         main: "#5ca9bd",
+      },
+      padding: {
+        default: "7%",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
