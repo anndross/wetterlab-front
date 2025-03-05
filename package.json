@@ -20,6 +20,7 @@
     "@react-aria/i18n": "^3.12.3",
     "@types/react-leaflet": "^2.8.3",
     "@types/react-select": "^5.0.0",
+    "axios": "^1.8.1",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.1",
     "dayjs": "^1.11.13",

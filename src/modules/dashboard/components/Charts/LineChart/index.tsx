@@ -87,8 +87,6 @@ export const LineChart = ({ resize }: LineChartProps) => {
     );
   }
 
-  console.log("forecast", forecast);
-
   const mappedServices: { [key: string]: string } = mappedServicesJSON;
   const servicesLabel: { [key: string]: string } = {
     wspd: "m/s",

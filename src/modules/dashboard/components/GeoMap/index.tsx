@@ -5,9 +5,12 @@ import { Icon, LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
-import { decodeJWT } from "@/utils/decodeJWT";
 import { useDashStore } from "../../store";
 import { debounce } from "lodash";
+import {
+  getAvailableCoordinates,
+  getCoordinateAddress,
+} from "@/services/dashboard";
 
 export function GeoMap() {
   const { params, setParams } = useDashStore();
@@ -39,18 +42,14 @@ export function GeoMap() {
   );
 
   useEffect(() => {
-    const token = cookies.get("token");
-    const decodedToken = decodeJWT(token ?? "");
-    const customerId = decodedToken?.customer_id;
-
     async function handleAvailableCoordinates() {
-      const availableCoordinatesData = await fetch(
-        `/wetterlab/api/erp/available-services?customer_id=${customerId}`
-      ).then((res) => res.ok && res.json());
+      const availableCoordinates = await getAvailableCoordinates();
 
-      setAvailableCoordinates(availableCoordinatesData);
+      if (!availableCoordinates) return;
 
-      const [lat, lon] = availableCoordinatesData[0];
+      setAvailableCoordinates(availableCoordinates);
+
+      const [lat, lon] = availableCoordinates[0];
 
       setParams({
         location: {
@@ -60,29 +59,30 @@ export function GeoMap() {
       });
     }
 
-    if (customerId) handleAvailableCoordinates();
+    handleAvailableCoordinates();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cookies]);
 
   useEffect(() => {
-    async function getCoorinateInfo() {
-      const coordinateInfo = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
-      ).then((res) => res.json());
+    async function getCoordinateInfo() {
+      if (!lat || !lon) return;
+
+      const coordinateAddress = await getCoordinateAddress([lat, lon]);
+
+      if (!coordinateAddress) return;
+
+      const { address } = coordinateAddress;
 
       setParams({
         location: {
           ...params.location,
-          state: coordinateInfo?.address?.state || "",
-          city:
-            coordinateInfo?.address?.city ||
-            coordinateInfo?.address?.city_district ||
-            "",
+          state: address?.state || "",
+          city: address?.city || address?.city_district || "",
         },
       });
     }
-    if (lat && lon) getCoorinateInfo();
+    if (lat && lon) getCoordinateInfo();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lat, lon]);
