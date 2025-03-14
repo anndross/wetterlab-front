@@ -1,20 +1,14 @@
 "use server";
+import axios from "axios";
 import { cookies } from "next/headers";
 
 export async function loginAction(email: string) {
   const api = "http://34.23.51.63:8000/api/erp/login";
 
   try {
-    const response = await fetch(api, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ email }),
-    });
+    const { data: responseData } = await axios.post(api, { email });
 
-    const { data, error } = await response.json();
+    const { data, error } = responseData;
 
     const cookieStore = cookies();
 

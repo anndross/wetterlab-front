@@ -43,7 +43,7 @@ export function EmailStep() {
 
             if (response?.error) setError("email", { message: response.error });
 
-            router.push("/dashboard"); // Redireciona no client
+            router.push("/dashboard");
           });
       })}
     >

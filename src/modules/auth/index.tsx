@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { EmailStep } from "@/modules/auth/steps/email";
-import { CodeStep } from "./steps/code";
 
 export function Login() {
   return (

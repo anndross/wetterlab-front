@@ -8,7 +8,7 @@ type GetAvailableCoordinatesResponse = {
 export async function getAvailableCoordinates(): Promise<
   GetAvailableCoordinatesResponse["data"] | null
 > {
-  const userPayload = getUserPayload();
+  const userPayload = await getUserPayload();
 
   if (!userPayload) return null;
 

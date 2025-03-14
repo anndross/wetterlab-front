@@ -1,6 +1,5 @@
 "use client";
 import { FaUser } from "react-icons/fa";
-import { loginAction } from "@/modules/auth/Action";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Spinner } from "@/components/ui/spinner";
@@ -31,7 +30,6 @@ export function CodeStep() {
     handleSubmit,
     register,
     formState: { errors },
-    setError,
   } = useForm<IFormInputs>({
     resolver: zodResolver(CodeFormSchema),
   });
@@ -42,11 +40,7 @@ export function CodeStep() {
       onSubmit={handleSubmit((data) => {
         if (data.code)
           startTransition(async () => {
-            console.log(data);
-
-            // if (response?.error) setError("code", { message: response.error });
-
-            router.push("/dashboard"); // Redireciona no client
+            router.push("/dashboard");
           });
       })}
     >

@@ -1,7 +1,9 @@
+"use server";
+
 import { decodeJWT } from "@/utils/decodeJWT";
 import { cookies } from "next/headers";
 
-export function getToken(): string | undefined {
+export async function getToken(): Promise<string | undefined> {
   const token = cookies().get("token")?.value;
 
   return token;
@@ -20,8 +22,8 @@ type UserPayload = {
   exp: number;
 };
 
-export function getUserPayload(): UserPayload | null {
-  const token = getToken();
+export async function getUserPayload(): Promise<UserPayload | null> {
+  const token = await getToken();
 
   if (!token?.length) return null;
 

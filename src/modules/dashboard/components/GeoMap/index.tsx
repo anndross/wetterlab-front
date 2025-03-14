@@ -10,7 +10,7 @@ import { debounce } from "lodash";
 import {
   getAvailableCoordinates,
   getCoordinateAddress,
-} from "@/services/dashboard";
+} from "@/services/coordinates";
 
 export function GeoMap() {
   const { params, setParams } = useDashStore();
